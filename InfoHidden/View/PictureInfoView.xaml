@@ -1,0 +1,55 @@
+﻿<Window x:Class="InfoHidden.View.PictureInfoView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InfoHidden.View"
+        xmlns:vm="clr-namespace:InfoHidden.ViewModel"
+        mc:Ignorable="d"
+        Title="PictureInfo" Height="300" Width="300">
+    
+    <Window.DataContext>
+        <vm:PictureInfoViewModel></vm:PictureInfoViewModel>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <Style x:Key="headerStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+
+        <Style x:Key="contentStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource headerStyle}">
+            <Setter Property="TextWrapping" Value="WrapWithOverflow"></Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="75px"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="文件路径" Style="{StaticResource headerStyle}"></TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FilePath}" Style="{StaticResource contentStyle}"></TextBlock>
+
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="宽高" Style="{StaticResource headerStyle}"></TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Dimension}" Style="{StaticResource contentStyle}"></TextBlock>
+
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="比特每像素" Style="{StaticResource headerStyle}"></TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding BitsPerPixel}" Style="{StaticResource contentStyle}"></TextBlock>
+
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="最大隐藏容量" Style="{StaticResource headerStyle}"></TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding MaxCapacity}" Style="{StaticResource contentStyle}"></TextBlock>
+
+    </Grid>
+</Window>

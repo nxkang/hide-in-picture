@@ -1,0 +1,94 @@
+﻿<Window x:Class="InfoHidden.View.DeHideOptionView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InfoHidden.View"
+        xmlns:vm="clr-namespace:InfoHidden.ViewModel"
+        xmlns:pwHelper="clr-namespace:InfoHidden.Utility"
+        mc:Ignorable="d"
+        x:Name="deHideOptionView"
+        Title="DeHideOption" Height="180" Width="350"
+        ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type ValidationError}">
+            <TextBlock 
+                  FontStyle="Italic"
+                  Foreground="Red"
+                  HorizontalAlignment="Left"
+                  Margin="0,1"
+                  Text="{Binding Path=ErrorContent}"
+                  />
+        </DataTemplate>
+    </Window.Resources>
+    
+    <Window.DataContext>
+        <vm:DeHideOptionViewModel></vm:DeHideOptionViewModel>
+    </Window.DataContext>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="7*"></ColumnDefinition>
+            
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Password" 
+               VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
+        <PasswordBox Grid.Row="0" Grid.Column="1" 
+                     Margin="15, 10"
+                     x:Name="passwordBox"
+                     pwHelper:PasswordBoxAssistant.BindPassword="True"
+                     pwHelper:PasswordBoxAssistant.BoundPassword=
+                            "{Binding Password, 
+                            Mode=TwoWay,
+                            UpdateSourceTrigger=PropertyChanged, 
+                            ValidatesOnDataErrors=True}"
+                     Validation.ErrorTemplate="{x:Null}"></PasswordBox>
+        <ContentPresenter Grid.Row="1" Grid.Column="1" 
+                          Margin="15, 0" 
+                          MinHeight="20"
+                          Content="{Binding 
+                            ElementName= passwordBox, 
+                            Path=(Validation.Errors).CurrentItem}"></ContentPresenter>
+
+        <Label Grid.Row="2" Grid.Column="0" 
+               Content="File Name"
+               VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
+        <Grid Grid.Row="2" Grid.Column="1" Margin="15, 10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="{Binding FilePath, Mode=TwoWay}"></TextBlock>
+            <Button Grid.Column="1"
+                    Content="..."
+                    Command="{Binding OpenFileCommand}"></Button>
+        </Grid>
+
+
+        <StackPanel Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+            <Button Width="55" Height="25" Margin="10"
+                Content="OK"
+                Command="{Binding SubmitCommand}"
+                CommandParameter="{Binding ElementName=deHideOptionView}"></Button>
+            <Button Width="55" Height="25" Margin="10"
+                Content="Cancel"
+                Command="{Binding CancelCommand}" 
+                CommandParameter="{Binding ElementName=deHideOptionView}"
+                IsCancel="True"></Button>
+        </StackPanel>
+    </Grid>
+</Window>
