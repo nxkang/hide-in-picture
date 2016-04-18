@@ -113,7 +113,6 @@
     <Compile Include="Model\HideOption.cs" />
     <Compile Include="Model\ImageM.cs" />
     <Compile Include="Model\PictureInfo.cs" />
-    <Compile Include="Service\PasswordErrorException.cs" />
     <Compile Include="Service\ServiceException\ImageHideCapacityTooSmallException.cs" />
     <Compile Include="Service\HideLSB.cs" />
     <Compile Include="Service\ServiceException\PasswordWrongException.cs" />
