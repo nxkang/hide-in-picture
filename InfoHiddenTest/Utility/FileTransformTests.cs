@@ -1,11 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using InfoHidden.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using InfoHidden.Utility;
+using InfoHiddenTest.UnitTestUtilities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 
-namespace InfoHidden.Service.Tests
+namespace InfoHiddenTest.Utility
 {
     [TestClass()]
     public class FileTransformTests
@@ -13,11 +11,18 @@ namespace InfoHidden.Service.Tests
         [TestMethod()]
         public void File2ByteArrayTest()
         {
-            string path = @"D:/Users/liukang/documents/visual studio 2010/Projects/InfoHidden/InfoHiddenTest/Data/testDocx.docx";
+            string path = PathHelper.GetFilePath(@"/Data/testDocx.docx");
             var bytes = FileTransform.File2ByteArray(path);
-            FileTransform.ByteArray2File(@"D:/Users/liukang/documents/visual studio 2010/Projects/InfoHidden/InfoHiddenTest/Data/output_kms8.log", bytes);
+            FileTransform.ByteArray2File(PathHelper.GetFilePath("/Data/testDocx_out.docx"), bytes);
         }
 
 
-    }
+        [TestMethod]
+        public void File2StringTest()
+        {
+            string path = PathHelper.GetFilePath(@"/Data/testTxt.txt");
+            string content = FileTransform.File2String(path);
+            
+        }
+}
 }

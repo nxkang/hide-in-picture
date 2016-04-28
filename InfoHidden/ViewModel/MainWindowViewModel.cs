@@ -1,46 +1,113 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
-using Microsoft.Practices.Prism.ViewModel;
-using Microsoft.Practices.Prism.Commands;
-using System.Windows;
-using InfoHidden.Model;
-using InfoHidden.View;
-using InfoHidden.Utility;
-using InfoHidden.Service;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Runtime.InteropServices;
 using System.Drawing;
 using System.IO;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using InfoHidden.Model;
+using InfoHidden.Service;
+using InfoHidden.Service.Encryption.Impl;
 using InfoHidden.Service.ServiceException;
-using System.Drawing.Imaging;
-using System.Windows.Interop;
-using System.Diagnostics;
+using InfoHidden.Utility;
+using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace InfoHidden.ViewModel
 {
-    class MainWindowViewModel : NotificationObject
+    internal class MainWindowViewModel : NotificationObject
     {
-
         #region cntr
 
         public MainWindowViewModel()
         {
-            this.OpenFileCommand = new DelegateCommand<object>(new Action<object>(this.ExecuteOpenFile), new Func<object, bool>(this.CanExecuteOpenFile));
-            this.SaveAsCommand = new DelegateCommand(new Action(this.ExecuteSaveAs), new Func<bool>(this.CanExecuteSaveAs));
-            this.ClosePictureCommand = new DelegateCommand(new Action(this.ExecuteClosePicture), new Func<bool>(this.CanExecuteClosePicture));
+            OpenFileCommand = new DelegateCommand<object>(ExecuteOpenFile, CanExecuteOpenFile);
+            SaveAsCommand = new DelegateCommand(ExecuteSaveAs, CanExecuteSaveAs);
+            ClosePictureCommand = new DelegateCommand(ExecuteClosePicture, CanExecuteClosePicture);
 
-            this.HideFileCommand = new DelegateCommand<object>(new Action<object>(this.ExecuteHideFile), new Func<object, bool>(this.CanExecuteHideFile));
-            this.RetrieveFileCommand = new DelegateCommand<object>(new Action<object>(this.ExecuteRetrieveFile), new Func<object, bool>(this.CanExecuteRetrieveFile));
-            this.EraseFileCommand = new DelegateCommand(new Action(this.ExecuteEraseFile), new Func<bool>(this.CanExecuteEraseFile));
+            HideFileCommand = new DelegateCommand<object>(ExecuteHideFile, CanExecuteHideFile);
+            RetrieveFileCommand = new DelegateCommand<object>(ExecuteRetrieveFile, CanExecuteRetrieveFile);
+            EraseFileCommand = new DelegateCommand(ExecuteEraseFile, CanExecuteEraseFile);
 
-            this.PictureInfoCommand = new DelegateCommand<object>(new Action<object>(this.ExecutePictureInfo), new Func<object, bool>(this.CanExecutePictureInfo));
+            PictureInfoCommand = new DelegateCommand<object>(ExecutePictureInfo, CanExecutePictureInfo);
+            PictureZoomCommand = new DelegateCommand<object>(ExecutePictureZoom, CanExecutePictureZoom);
         }
 
         #endregion
+
+
+
+
+        /// <summary>
+        /// </summary>
+        /// <param name="msg">消息</param>
+        /// <param name="msgBoxCaption">标题栏标题</param>
+        /// <param name="msgBoxBtn">按钮</param>
+        /// <param name="msgBoxImg">图标</param>
+        /// <returns></returns>
+        private bool ShowMessageBox(string msg,
+            string msgBoxCaption = "警告",
+            MessageBoxButton msgBoxBtn = MessageBoxButton.OK,
+            MessageBoxImage msgBoxImg = MessageBoxImage.Warning)
+        {
+            var isConfirm = MessageBox.Show(msg, msgBoxCaption, msgBoxBtn, msgBoxImg);
+            if (isConfirm == MessageBoxResult.Yes || isConfirm == MessageBoxResult.OK)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private HideOption GetHideOptionFromView(Window parentWin)
+        {
+            var hovm = new HideOptionViewModel();
+            hovm.doUpdate(parentWin);
+            var hideOption = (HideOption) Application.Current.Properties["hideOption"];
+            Application.Current.Properties["hideOption"] = null;
+
+            return hideOption;
+        }
+
+        private DeHideOption GetDeHideOptionFromView(Window parentWin)
+        {
+            var deHideOptionViewModel = new DeHideOptionViewModel();
+            deHideOptionViewModel.doUpate(parentWin);
+            var deHideOption = (DeHideOption) Application.Current.Properties["deHideOption"];
+            Application.Current.Properties["deHideOption"] = null;
+
+            return deHideOption;
+        }
+
+        private void RaiseAllCommandsCanExecuteChanged()
+        {
+            OpenFileCommand.RaiseCanExecuteChanged();
+            ClosePictureCommand.RaiseCanExecuteChanged();
+            SaveAsCommand.RaiseCanExecuteChanged();
+
+            HideFileCommand.RaiseCanExecuteChanged();
+            RetrieveFileCommand.RaiseCanExecuteChanged();
+
+            EraseFileCommand.RaiseCanExecuteChanged();
+            PictureInfoCommand.RaiseCanExecuteChanged();
+        }
+
+        private uint[] StrPassword2UintArr(string strPassword)
+        {
+            var ret = new uint[4];
+
+            var paddedStrPassword = string.Concat(strPassword, new string('0', 16 - strPassword.Length));
+
+            for (var i = 0; i < paddedStrPassword.Length; i += 4)
+            {
+                var idx = i/4;
+                ret[idx] = strPassword[idx + 3];
+                ret[idx] |= (uint) (strPassword[idx + 2] << 8);
+                ret[idx] |= (uint) (strPassword[idx + 1] << 16);
+                ret[idx] |= (uint) (strPassword[idx] << 24);
+            }
+
+            return ret;
+        }
+
 
 
         #region  Commands Properties
@@ -59,94 +126,145 @@ namespace InfoHidden.ViewModel
 
         public DelegateCommand<object> PictureInfoCommand { get; set; }
 
+        public DelegateCommand<object> PictureZoomCommand { get; set; }
 
         #endregion
-
 
         #region Properites
 
-        private BitmapImage coverImage = null;
+        private BitmapImage _coverImage;
+
         public BitmapImage CoverImage
         {
-            get { return this.coverImage; }
+            get { return _coverImage; }
             set
             {
-                this.coverImage = value;
-                RaisePropertyChanged("CoverImage");
+                _coverImage = value;
+                RaisePropertyChanged(nameof(CoverImage));
 
-                this.RaiseAllCommandsCanExecuteChanged();
+                RaiseAllCommandsCanExecuteChanged();
             }
         }
 
-        private BitmapImage hiddenImage = null;
+        private BitmapImage _hiddenImage;
+
         public BitmapImage HiddenImage
         {
-            get { return this.hiddenImage; }
+            get { return _hiddenImage; }
             set
             {
-                this.hiddenImage = value;
-                RaisePropertyChanged("HiddenImage");
+                _hiddenImage = value;
+                RaisePropertyChanged(nameof(HiddenImage));
 
-                this.RaiseAllCommandsCanExecuteChanged();
+                RaiseAllCommandsCanExecuteChanged();
             }
         }
 
 
-        private Bitmap coverImageBitmapCache;
-        
-        private Bitmap hiddenImageBitmapCache;
-       
+        private Bitmap _coverImageBitmapCache;
+
+        private Bitmap _hiddenImageBitmapCache;
+
+
+        private string _imageFilePath;
+
+        public string ImageFilePath
+        {
+            get { return _imageFilePath; }
+            set
+            {
+                _imageFilePath = value;
+                RaisePropertyChanged(nameof(ImageFilePath));
+
+                RaiseAllCommandsCanExecuteChanged();
+            }
+        }
+
+        private bool _isBusy;
+
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+
+            set
+            {
+                _isBusy = value;
+                RaisePropertyChanged(nameof(IsBusy));
+
+                RaiseAllCommandsCanExecuteChanged();
+            }
+        }
 
         #endregion
 
-
         #region Commands
+
+        public bool CanExecutePictureZoom(object args)
+        {
+            return CoverImage != null || HiddenImage != null;
+        }
+
+        public void ExecutePictureZoom(object args)
+        {
+            var mainWindow = Application.Current.MainWindow;
+
+            var tfs = (TransformGroup) mainWindow.FindResource("ImageTransformResource");
+            var scaleTf = (ScaleTransform) tfs.Children[0];
+
+            var zoomPara = double.Parse((string) args)/100;
+
+            scaleTf.ScaleX = zoomPara;
+            scaleTf.ScaleY = zoomPara;
+        }
+
 
         public bool CanExecutePictureInfo(object sender)
         {
-            return this.CoverImage != null; 
+            return CoverImage != null;
         }
 
         public void ExecutePictureInfo(object sender)
         {
-            Application.Current.Properties["pictureInfo"] = PictureInfo.CreatePictureInfo(this.coverImageBitmapCache);
-            (new PictureInfoViewModel()).doUpdate(sender as Window);
+            Application.Current.Properties["pictureInfo"] = PictureInfo.CreatePictureInfo(_coverImageBitmapCache);
+            ((PictureInfo) Application.Current.Properties["pictureInfo"]).FilePath = ImageFilePath;
+            new PictureInfoViewModel().DoUpdate(sender as Window);
             Application.Current.Properties["pictureInfo"] = null;
         }
 
 
         public bool CanExecuteEraseFile()
         {
-            return this.HiddenImage != null;
+            return HiddenImage != null;
         }
 
         public void ExecuteEraseFile()
         {
-            HideLSB.Erase(ref this.hiddenImageBitmapCache);
-            this.HiddenImage = FileTransform.Bitmap2BitmapImage(this.hiddenImageBitmapCache);
-            
-            this.showMessageBox("擦除已完成.", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            IsBusy = true;
+
+            HideLSB.Erase(ref _hiddenImageBitmapCache);
+            HiddenImage = FileTransform.Bitmap2BitmapImage(_hiddenImageBitmapCache);
+
+            IsBusy = false;
+
+            ShowMessageBox("擦除已完成.", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
 
         public bool CanExecuteSaveAs()
         {
-            return  this.HiddenImage != null;
+            return HiddenImage != null;
         }
 
         public void ExecuteSaveAs()
         {
-            string fileTypesPattern = "bmp file (*.bmp)|*.bmp|All files (*.*)|*.*";
-            string defaultExt = "bmp";
-            string savePath = GetFilePathFromFileDialog.getFilePahtFromSaveFileDialog(fileTypesPattern, defaultExt);
+            var fileTypesPattern = "bmp file (*.bmp)|*.bmp|All files (*.*)|*.*";
+            var defaultExt = "bmp";
+            var savePath = GetFilePathFromFileDialog.getFilePahtFromSaveFileDialog(fileTypesPattern, defaultExt);
 
             if (File.Exists(savePath))
                 File.Delete(savePath);
-            this.hiddenImageBitmapCache.Save(savePath);
-
-            return;
+            _hiddenImageBitmapCache.Save(savePath);
         }
-
 
 
         public bool CanExecuteOpenFile(object args)
@@ -158,209 +276,145 @@ namespace InfoHidden.ViewModel
         {
             try
             {
-                string fileTypesPattern = "bmp file (*.bmp)|*.bmp|All files (*.*)|*.*";
-                string defaultExt = "bmp";
-                string imageUri = GetFilePathFromFileDialog.getFilePathFromOpenFileDialog(fileTypesPattern, defaultExt);
+                var fileTypesPattern = "bmp file (*.bmp)|*.bmp|All files (*.*)|*.*";
+                var defaultExt = "bmp";
+                var imageUri = GetFilePathFromFileDialog.getFilePathFromOpenFileDialog(fileTypesPattern, defaultExt);
 
                 if (string.IsNullOrEmpty(imageUri))
                     return;
 
-                BitmapImage bitmapImg = FileTransform.ImageUri2BitmapImage(imageUri);
-                Bitmap bitmapCache = FileTransform.BitmapImage2Bitmap(bitmapImg);
+                var bitmapImg = FileTransform.ImageUri2BitmapImage(imageUri);
+                var bitmapCache = FileTransform.BitmapImage2Bitmap(bitmapImg);
 
-                string openCmdPara = (string)args;
+                var openCmdPara = (string) args;
                 if ("Cover".Equals(openCmdPara))
                 {
-                    this.CoverImage = bitmapImg;
-                    this.coverImageBitmapCache = bitmapCache;
-                    this.HiddenImage = null;
-                    this.hiddenImageBitmapCache = null;
+                    CoverImage = bitmapImg;
+                    _coverImageBitmapCache = bitmapCache;
+                    HiddenImage = null;
+                    _hiddenImageBitmapCache = null;
                 }
                 else if ("Hidden".Equals(openCmdPara))
                 {
-                    this.HiddenImage = bitmapImg;
-                    this.hiddenImageBitmapCache = bitmapCache;
-                    this.CoverImage = null;
-                    this.coverImageBitmapCache = null;
+                    HiddenImage = bitmapImg;
+                    _hiddenImageBitmapCache = bitmapCache;
+                    CoverImage = null;
+                    _coverImageBitmapCache = null;
                 }
+
+                ImageFilePath = imageUri;
             }
             catch (FileFormatException)
             {
-
-                showMessageBox("请打开bmp文件.");
+                ShowMessageBox("请打开bmp文件.");
+            }
+            catch (Exception)
+            {
+                ShowMessageBox("请打开bmp文件.");
             }
         }
-
 
 
         public bool CanExecuteHideFile(object args)
         {
-            return this.CoverImage != null;
+            return CoverImage != null;
         }
 
         public void ExecuteHideFile(object args)
-        {            
+        {
             try
             {
-
-                HideOption hideOption = this.getHideOptionFromView((Window)args);
+                var hideOption = GetHideOptionFromView((Window) args);
 
                 if (hideOption == null)
                     return;
 
-                byte[] fileBytesToHide = FileTransform.File2ByteArray(hideOption.FilePath);
-                byte[] zipedCoverImageBytes = ZIP.Compress(fileBytesToHide);
-                byte[] ciphertext = EncryptionTEA.Encrypt(zipedCoverImageBytes, strPassword2uintArr(hideOption.Password));
+                IsBusy = true;
 
-                Bitmap tmpBitmapCacheToHide = (Bitmap)this.coverImageBitmapCache.Clone(new Rectangle(0, 0, this.coverImageBitmapCache.Width, this.coverImageBitmapCache.Height), this.coverImageBitmapCache.PixelFormat);
+                var fileBytesToHide = FileTransform.File2ByteArray(hideOption.FilePath);
+                var zipedCoverImageBytes = Zip.Compress(fileBytesToHide);
+                var ciphertext = EncryptionTEA.Encrypt(zipedCoverImageBytes, StrPassword2UintArr(hideOption.Password));
+
+                var tmpBitmapCacheToHide =
+                    _coverImageBitmapCache.Clone(
+                        new Rectangle(0, 0, _coverImageBitmapCache.Width, _coverImageBitmapCache.Height),
+                        _coverImageBitmapCache.PixelFormat);
 
                 HideLSB.Hide(ref tmpBitmapCacheToHide, ciphertext);
-                byte[] outbytes = HideLSB.DeHide(tmpBitmapCacheToHide);
+                var outbytes = HideLSB.DeHide(tmpBitmapCacheToHide);
 
-                this.hiddenImageBitmapCache = tmpBitmapCacheToHide;
-                this.HiddenImage = FileTransform.Bitmap2BitmapImage(this.hiddenImageBitmapCache);
+                _hiddenImageBitmapCache = tmpBitmapCacheToHide;
+                HiddenImage = FileTransform.Bitmap2BitmapImage(_hiddenImageBitmapCache);
 
 
-                Console.WriteLine("just for setting a breakpoint.");
+                IsBusy = false;
             }
             catch (ImageHideCapacityTooSmallException)
             {
-                showMessageBox("该图片隐藏容量不足", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                ShowMessageBox("该图片隐藏容量不足", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (IOException)
+            {
+                ShowMessageBox("文件无法正常打开", "错误");
             }
         }
 
 
-
         public bool CanExecuteRetrieveFile(object args)
         {
-            return this.HiddenImage != null;
+            return HiddenImage != null;
         }
 
         public void ExecuteRetrieveFile(object args)
         {
             try
             {
-                DeHideOption deHideOption = this.getDeHideOptionFromView((Window)args);
+                var deHideOption = GetDeHideOptionFromView((Window) args);
 
                 if (deHideOption == null)
                     return;
 
-                byte[] ciphertext = HideLSB.DeHide(this.hiddenImageBitmapCache);
-                byte[] plaintext = EncryptionTEA.Decrypt(ciphertext, strPassword2uintArr(deHideOption.Password));
-                byte[] deZipdata = ZIP.Decompress(plaintext);
+                IsBusy = true;
+
+                var ciphertext = HideLSB.DeHide(_hiddenImageBitmapCache);
+                var plaintext = EncryptionTEA.Decrypt(ciphertext, StrPassword2UintArr(deHideOption.Password));
+                var deZipdata = Zip.Decompress(plaintext);
 
                 if (File.Exists(deHideOption.FilePath))
                     File.Delete(deHideOption.FilePath);
                 FileTransform.ByteArray2File(deHideOption.FilePath, deZipdata);
 
-                showMessageBox("Retrieve file is done.", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                IsBusy = false;
+
+                ShowMessageBox("Retrieve file is done.", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (PasswordWrongException)
             {
-                showMessageBox("Password is wrong.", "警告", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowMessageBox("Password is wrong.", "警告", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-
         }
 
 
         public bool CanExecuteClosePicture()
         {
-            return this.CoverImage != null ||  this.HiddenImage != null ;
+            return CoverImage != null || HiddenImage != null;
         }
 
         public void ExecuteClosePicture()
         {
-            bool isConfirm = this.showMessageBox("确定关闭？");
+            var isConfirm = ShowMessageBox("确定关闭？", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
             if (isConfirm == false)
                 return;
 
-            this.CoverImage = null;
-            this.coverImageBitmapCache = null;
-            this.HiddenImage = null;
-            this.hiddenImageBitmapCache = null;
+            CoverImage = null;
+            _coverImageBitmapCache = null;
+            HiddenImage = null;
+            _hiddenImageBitmapCache = null;
+
+            ImageFilePath = null;
         }
 
         #endregion
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="msg">消息</param>
-        /// <param name="msgBoxCaption">标题栏标题</param>
-        /// <param name="msgBoxBtn">按钮</param>
-        /// <param name="msgBoxImg">图标</param>
-        /// <returns></returns>
-        private bool showMessageBox(string msg, 
-            string msgBoxCaption = "提示", 
-            MessageBoxButton msgBoxBtn = MessageBoxButton.YesNo,
-            MessageBoxImage msgBoxImg = MessageBoxImage.Question)
-        {
-            
-            MessageBoxResult isConfirm = MessageBox.Show(msg, msgBoxCaption, msgBoxBtn, msgBoxImg);
-            if (isConfirm == MessageBoxResult.Yes || isConfirm == MessageBoxResult.OK)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private HideOption getHideOptionFromView(Window parentWin)
-        {
-            
-            var hovm = new HideOptionViewModel();
-            hovm.doUpdate(parentWin);
-            var hideOption = (HideOption) Application.Current.Properties["hideOption"];
-            Application.Current.Properties["hideOption"] = null;
-           
-            return hideOption;
-        }
-
-        private DeHideOption getDeHideOptionFromView(Window parentWin)
-        {
-            var deHideOptionViewModel = new DeHideOptionViewModel();
-            deHideOptionViewModel.doUpate(parentWin);
-            var deHideOption = (DeHideOption) Application.Current.Properties["deHideOption"];
-            Application.Current.Properties["deHideOption"] = null;
-            
-            return deHideOption;
-        }
-
-        private void RaiseAllCommandsCanExecuteChanged()
-        {
-            this.OpenFileCommand.RaiseCanExecuteChanged();
-            this.ClosePictureCommand.RaiseCanExecuteChanged();
-            this.SaveAsCommand.RaiseCanExecuteChanged();
-
-            this.HideFileCommand.RaiseCanExecuteChanged();
-            this.RetrieveFileCommand.RaiseCanExecuteChanged();
-
-            this.EraseFileCommand.RaiseCanExecuteChanged();
-            this.PictureInfoCommand.RaiseCanExecuteChanged();
-        }
-
-        private uint[] strPassword2uintArr(string strPassword)
-        {
-            uint[] ret = new uint[4];
-
-            string paddedStrPassword = string.Concat(strPassword, new string('0', 16-strPassword.Length));
-
-            for (int i = 0; i < paddedStrPassword.Length; i += 4)
-            {
-                int idx = i / 4;
-                ret[idx] = strPassword[idx + 3];
-                ret[idx] |= (uint)((strPassword[idx + 2]) << 8);
-                ret[idx] |= (uint)((strPassword[idx + 1]) << 16);
-                ret[idx] |= (uint)((strPassword[idx    ]) << 24);
-            }
-
-            return ret;
-        }
-
-
     }
 }

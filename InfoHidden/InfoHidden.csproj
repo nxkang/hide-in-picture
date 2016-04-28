@@ -111,19 +111,28 @@
     <Compile Include="Converters\StringToImageConverter.cs" />
     <Compile Include="Model\DeHideOption.cs" />
     <Compile Include="Model\HideOption.cs" />
-    <Compile Include="Model\ImageM.cs" />
     <Compile Include="Model\PictureInfo.cs" />
+    <Compile Include="Service\Encryption\IEncryption.cs" />
+    <Compile Include="Service\Encryption\Impl\EncryptionDES.cs" />
+    <Compile Include="Service\Encryption\Impl\EncryptionFactory.cs" />
+    <Compile Include="Service\Encryption\Impl\EncryptionTEA.cs" />
+    <Compile Include="Service\Encryption\Impl\EncryptionTripleDES.cs" />
     <Compile Include="Service\ServiceException\ImageHideCapacityTooSmallException.cs" />
     <Compile Include="Service\HideLSB.cs" />
     <Compile Include="Service\ServiceException\PasswordWrongException.cs" />
+    <Compile Include="TriggerAction\InvokeDelegateCommandAction.cs" />
+    <Compile Include="Utility\DataConverter.cs" />
     <Compile Include="Utility\FileTransform.cs" />
     <Compile Include="Service\ZIP.cs" />
-    <Compile Include="Service\EncryptionTEA.cs" />
     <Compile Include="ViewModel\PictureInfoViewModel.cs" />
     <Compile Include="ViewModel\VMException\FileFormatException.cs" />
     <Compile Include="View\PictureInfoView.xaml.cs">
       <DependentUpon>PictureInfoView.xaml</DependentUpon>
     </Compile>
+    <Page Include="ResourceDictionary\ResourceDict_MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\DeHideOptionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

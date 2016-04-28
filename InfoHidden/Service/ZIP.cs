@@ -9,7 +9,7 @@ using InfoHidden.Service.ServiceException;
 
 namespace InfoHidden.Service
 {
-    public class ZIP 
+    public class Zip 
     {
 
         public static byte[] Compress(byte[] fileBytes)

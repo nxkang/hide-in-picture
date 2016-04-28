@@ -1,11 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using InfoHidden.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using InfoHidden.Service;
+using InfoHidden.Utility;
+using InfoHiddenTest.UnitTestUtilities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace InfoHidden.Service.Tests
+namespace InfoHiddenTest.Service
 {
     [TestClass()]
     public class ZIPTests
@@ -13,15 +11,16 @@ namespace InfoHidden.Service.Tests
         [TestMethod()]
         public void CompressTest()
         {
-            string srcFilePath = @"D:/Users/liukang/documents/visual studio 2010/Projects/InfoHidden/InfoHidden/Data/boy.bmp";
-            string outFilePath = @"D:/Users/liukang/documents/visual studio 2010/Projects/InfoHidden/InfoHidden/Data/boy2.bmp";
+            string srcFilePath = PathHelper.GetFilePath(@"/Data/boy.bmp");
+            string outFilePath = PathHelper.GetFilePath(@"/Data/boy2.bmp");
 
-            var srcFileBytes = FileTransform.File2ByteArray(srcFilePath);
+            var expected = FileTransform.File2ByteArray(srcFilePath);
 
-            var zipedSrcFileBytes = ZIP.Compress(srcFileBytes);
-            var unzipedSrcFileBytes = ZIP.Decompress(zipedSrcFileBytes);
+            var zipedSrcFileBytes = Zip.Compress(expected);
 
-            FileTransform.ByteArray2File(outFilePath, unzipedSrcFileBytes);
+            var actual = Zip.Decompress(zipedSrcFileBytes);
+
+            CollectionAssert.AreEqual(actual, expected);
         }
     }
 }

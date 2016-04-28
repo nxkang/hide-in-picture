@@ -5,11 +5,9 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace InfoHidden.Service
+namespace InfoHidden.Utility
 {
     public class FileTransform
     {
@@ -57,6 +55,24 @@ namespace InfoHidden.Service
         }
 
 
+        public static string File2String(string srcFilePath)
+        {
+            if (!File.Exists(srcFilePath))
+            {
+                throw new ArgumentException();
+            }
+
+            string readContents;
+            using (StreamReader streamReader = new StreamReader(srcFilePath, Encoding.UTF8))
+            {
+                readContents = streamReader.ReadToEnd();
+            }
+
+            return readContents;
+        }
+
+
+        
 
         public static Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
         {

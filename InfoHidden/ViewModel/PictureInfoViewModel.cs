@@ -25,17 +25,17 @@ namespace InfoHidden.ViewModel
 
         #region Properties
 
-        public string FilePath { get { return pictureInfo.FilePath; }  }
+        public string FilePath => pictureInfo.FilePath;
 
-        public string Dimension { get { return pictureInfo.Width + " X " + pictureInfo.Height; }  }
+        public string Dimension => pictureInfo.Width + " X " + pictureInfo.Height;
 
-        public string BitsPerPixel { get { return pictureInfo.BitsPerPixel; }  }
+        public string BitsPerPixel => pictureInfo.BitsPerPixel;
 
-        public string MaxCapacity { get { return pictureInfo.MaxCapacity +　"KB"; }  }
+        public string MaxCapacity => pictureInfo.MaxCapacity +　"KB";
 
         #endregion
 
-        public void doUpdate(Window parentWin)
+        public void DoUpdate(Window parentWin)
         {
             pictureInfo = (PictureInfo)Application.Current.Properties["pictureInfo"];
             Application.Current.Properties["pictureInfo"] = null;
