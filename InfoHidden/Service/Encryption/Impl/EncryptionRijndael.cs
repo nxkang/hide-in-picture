@@ -1,19 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 using InfoHidden.Utility;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Engines;
 
 namespace InfoHidden.Service.Encryption.Impl
 {
-    public class EncryptionDES : IEncryption
+    public class EncryptionRijndael : IEncryption
     {
-        private static byte[] ivs =
-        {
-            120, 230, 10, 1, 10, 20, 30, 40,
-        };
+        static byte[] ivs =
+            {
+                120, 230, 10, 1, 10, 20, 30, 40,
+                120, 230, 10, 1, 10, 20, 30, 40,
+            };
 
         static byte[] EncryptStringToBytes(string plainText, byte[] Key, byte[] IV)
         {
@@ -23,17 +21,17 @@ namespace InfoHidden.Service.Encryption.Impl
             if (Key == null || Key.Length <= 0)
                 throw new ArgumentNullException("Key");
             if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("Key");
+                throw new ArgumentNullException("IV");
             byte[] encrypted;
-            // Create an TripleDESCryptoServiceProvider object
+            // Create an Rijndael object
             // with the specified key and IV.
-            using (TripleDESCryptoServiceProvider tdsAlg = new TripleDESCryptoServiceProvider())
+            using (Rijndael rijAlg = Rijndael.Create())
             {
-                tdsAlg.Key = Key;
-                tdsAlg.IV = IV;
+                rijAlg.Key = Key;
+                rijAlg.IV = IV;
 
-                // Create a decrytor to perform the stream transform.
-                ICryptoTransform encryptor = tdsAlg.CreateEncryptor(tdsAlg.Key, tdsAlg.IV);
+                // Create a decryptor to perform the stream transform.
+                ICryptoTransform encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
 
                 // Create the streams used for encryption.
                 using (MemoryStream msEncrypt = new MemoryStream())
@@ -65,21 +63,21 @@ namespace InfoHidden.Service.Encryption.Impl
             if (Key == null || Key.Length <= 0)
                 throw new ArgumentNullException("Key");
             if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("Key");
+                throw new ArgumentNullException("IV");
 
             // Declare the string used to hold
             // the decrypted text.
             string plaintext = null;
 
-            // Create an TripleDESCryptoServiceProvider object
+            // Create an Rijndael object
             // with the specified key and IV.
-            using (TripleDESCryptoServiceProvider tdsAlg = new TripleDESCryptoServiceProvider())
+            using (Rijndael rijAlg = Rijndael.Create())
             {
-                tdsAlg.Key = Key;
-                tdsAlg.IV = IV;
+                rijAlg.Key = Key;
+                rijAlg.IV = IV;
 
-                // Create a decrytor to perform the stream transform.
-                ICryptoTransform decryptor = tdsAlg.CreateDecryptor(tdsAlg.Key, tdsAlg.IV);
+                // Create a decryptor to perform the stream transform.
+                ICryptoTransform decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
 
                 // Create the streams used for decryption.
                 using (MemoryStream msDecrypt = new MemoryStream(cipherText))
@@ -106,12 +104,9 @@ namespace InfoHidden.Service.Encryption.Impl
         public byte[] Encrypt(byte[] plaintext, uint[] key)
         {
             var plainString = DataConverter.Bytes2String(plaintext);
-
             var keyBytes = DataConverter.UInts2Bytes(key);
 
             return EncryptStringToBytes(plainString, keyBytes, ivs);
-
-
         }
 
         public byte[] Decrypt(byte[] ciphertext, uint[] key)
@@ -122,7 +117,5 @@ namespace InfoHidden.Service.Encryption.Impl
 
             return DataConverter.String2Bytes(plainString);
         }
-
-
     }
 }

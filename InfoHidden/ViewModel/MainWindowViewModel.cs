@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using InfoHidden.Model;
 using InfoHidden.Service;
+using InfoHidden.Service.Encryption;
 using InfoHidden.Service.Encryption.Impl;
 using InfoHidden.Service.ServiceException;
 using InfoHidden.Utility;
@@ -60,7 +61,7 @@ namespace InfoHidden.ViewModel
         private HideOption GetHideOptionFromView(Window parentWin)
         {
             var hovm = new HideOptionViewModel();
-            hovm.doUpdate(parentWin);
+            hovm.DoUpdate(parentWin);
             var hideOption = (HideOption) Application.Current.Properties["hideOption"];
             Application.Current.Properties["hideOption"] = null;
 
@@ -70,7 +71,7 @@ namespace InfoHidden.ViewModel
         private DeHideOption GetDeHideOptionFromView(Window parentWin)
         {
             var deHideOptionViewModel = new DeHideOptionViewModel();
-            deHideOptionViewModel.doUpate(parentWin);
+            deHideOptionViewModel.DoUpate(parentWin);
             var deHideOption = (DeHideOption) Application.Current.Properties["deHideOption"];
             Application.Current.Properties["deHideOption"] = null;
 
@@ -92,11 +93,9 @@ namespace InfoHidden.ViewModel
 
         private uint[] StrPassword2UintArr(string strPassword)
         {
-            var ret = new uint[4];
+            var ret = new uint[strPassword.Length/4];
 
-            var paddedStrPassword = string.Concat(strPassword, new string('0', 16 - strPassword.Length));
-
-            for (var i = 0; i < paddedStrPassword.Length; i += 4)
+            for (var i = 0; i < strPassword.Length; i += 4)
             {
                 var idx = i/4;
                 ret[idx] = strPassword[idx + 3];
@@ -329,11 +328,12 @@ namespace InfoHidden.ViewModel
                 if (hideOption == null)
                     return;
 
-                IsBusy = true;
-
                 var fileBytesToHide = FileTransform.File2ByteArray(hideOption.FilePath);
                 var zipedCoverImageBytes = Zip.Compress(fileBytesToHide);
-                var ciphertext = EncryptionTEA.Encrypt(zipedCoverImageBytes, StrPassword2UintArr(hideOption.Password));
+
+                IEncryption encryptor = EncryptionFactory.CreateEncryption(hideOption.EncryptionAlg);
+
+                var ciphertext = encryptor.Encrypt(zipedCoverImageBytes, StrPassword2UintArr(hideOption.Password));
 
                 var tmpBitmapCacheToHide =
                     _coverImageBitmapCache.Clone(
@@ -341,13 +341,12 @@ namespace InfoHidden.ViewModel
                         _coverImageBitmapCache.PixelFormat);
 
                 HideLSB.Hide(ref tmpBitmapCacheToHide, ciphertext);
-                var outbytes = HideLSB.DeHide(tmpBitmapCacheToHide);
 
                 _hiddenImageBitmapCache = tmpBitmapCacheToHide;
                 HiddenImage = FileTransform.Bitmap2BitmapImage(_hiddenImageBitmapCache);
 
 
-                IsBusy = false;
+                
             }
             catch (ImageHideCapacityTooSmallException)
             {
@@ -377,7 +376,9 @@ namespace InfoHidden.ViewModel
                 IsBusy = true;
 
                 var ciphertext = HideLSB.DeHide(_hiddenImageBitmapCache);
-                var plaintext = EncryptionTEA.Decrypt(ciphertext, StrPassword2UintArr(deHideOption.Password));
+
+                IEncryption encryptor = EncryptionFactory.CreateEncryption(deHideOption.EncryptionAlg);
+                var plaintext = encryptor.Decrypt(ciphertext, StrPassword2UintArr(deHideOption.Password));
                 var deZipdata = Zip.Decompress(plaintext);
 
                 if (File.Exists(deHideOption.FilePath))
@@ -390,7 +391,11 @@ namespace InfoHidden.ViewModel
             }
             catch (PasswordWrongException)
             {
-                ShowMessageBox("Password is wrong.", "警告", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowMessageBox("Password is wrong.");
+            }
+            catch (Exception)
+            {
+                ShowMessageBox("Password is wrong.");
             }
         }
 

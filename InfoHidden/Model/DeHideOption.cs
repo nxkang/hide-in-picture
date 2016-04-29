@@ -12,7 +12,7 @@ namespace InfoHidden.Model
 
         public string FilePath { get; set; }
 
-
+        public string EncryptionAlg { get; set; }
 
         public static bool IsValid(DeHideOption deHideOption)
         {

@@ -71,26 +71,27 @@ namespace InfoHiddenTest.Service
         [TestMethod()]
         public void EncryptTest()
         {
-            uint[] key = new uint[4] { 1, 2, 3, 4 };
+            uint[] keys =
+            {
+                12, 23, 34, 45
+            };
 
-            byte[] expected = FileTransform.File2ByteArray(PathHelper.GetFilePath(@"/Data/testPng.png"));
+            byte[] expected = new byte[] { 96, 97, 98, 99 };
 
-            byte[] ciphertext = EncryptionTEA.Encrypt(expected, key);
+            var encrypter = new EncryptionTEA();
 
-            byte[] actual = EncryptionTEA.Decrypt(ciphertext, key);
+            byte[] ciphertext = encrypter.Encrypt(expected, keys);
+            byte[] actual = encrypter.Decrypt(ciphertext, keys);
 
             CollectionAssert.AreEqual(expected, actual);
         }
-
-
-        
 
 
         /// <summary>
         ///Encipher 的测试
         ///</summary>
         [TestMethod()]
-        public void encipherTest()
+        public void EncipherTest()
         {
             uint[] v = new uint[2]{3, 4}; 
             uint[] key = new uint[4]{1,2,3,4}; 

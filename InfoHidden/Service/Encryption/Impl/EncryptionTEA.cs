@@ -4,9 +4,9 @@ using InfoHidden.Utility;
 
 namespace InfoHidden.Service.Encryption.Impl
 {
-    public static class EncryptionTEA
+    public class EncryptionTEA : IEncryption
     {
-        public static byte[] Encrypt(byte[] plaintext, uint[] key)
+        public byte[] Encrypt(byte[] plaintext, uint[] key)
         {
             byte[] paddedPlainText = PaddingData(plaintext);
             byte[] ciphertext = new byte[paddedPlainText.Length];
@@ -31,7 +31,7 @@ namespace InfoHidden.Service.Encryption.Impl
             return ciphertext;
         }
 
-        public static byte[] Decrypt(byte[] ciphertext, uint[] key)
+        public byte[] Decrypt(byte[] ciphertext, uint[] key)
         {
             byte[] paddedPlaintext = new byte[ciphertext.Length];
 

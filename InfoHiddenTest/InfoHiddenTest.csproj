@@ -59,6 +59,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\DataConverterTest.cs" />
+    <Compile Include="Service\EncryptionAESTest.cs" />
+    <Compile Include="Service\EncryptionDESTest.cs" />
+    <Compile Include="Service\EncryptionRijndaelTest.cs" />
     <Compile Include="Service\EncryptionTEATest.cs" />
     <Compile Include="Service\HideLSBTests.cs" />
     <Compile Include="Service\ZIPTests.cs" />

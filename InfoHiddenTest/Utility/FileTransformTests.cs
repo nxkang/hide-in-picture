@@ -11,18 +11,20 @@ namespace InfoHiddenTest.Utility
         [TestMethod()]
         public void File2ByteArrayTest()
         {
-            string path = PathHelper.GetFilePath(@"/Data/testDocx.docx");
-            var bytes = FileTransform.File2ByteArray(path);
-            FileTransform.ByteArray2File(PathHelper.GetFilePath("/Data/testDocx_out.docx"), bytes);
+            string srcPath = PathHelper.GetFilePath(@"/Data/testDocx.docx");
+            string outPath = PathHelper.GetFilePath("/Data/testDocx_out.docx");
+
+            var expected = FileTransform.File2ByteArray(srcPath);
+
+            FileTransform.ByteArray2File(outPath, expected);
+
+            var actual = FileTransform.File2ByteArray(outPath);
+            File.Delete(outPath);
+
+            CollectionAssert.AreEqual(expected, actual);
         }
 
 
-        [TestMethod]
-        public void File2StringTest()
-        {
-            string path = PathHelper.GetFilePath(@"/Data/testTxt.txt");
-            string content = FileTransform.File2String(path);
-            
-        }
+        
 }
 }

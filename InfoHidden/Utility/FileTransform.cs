@@ -54,26 +54,7 @@ namespace InfoHidden.Utility
             return;
         }
 
-
-        public static string File2String(string srcFilePath)
-        {
-            if (!File.Exists(srcFilePath))
-            {
-                throw new ArgumentException();
-            }
-
-            string readContents;
-            using (StreamReader streamReader = new StreamReader(srcFilePath, Encoding.UTF8))
-            {
-                readContents = streamReader.ReadToEnd();
-            }
-
-            return readContents;
-        }
-
-
         
-
         public static Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
         {
             using (MemoryStream outStream = new MemoryStream())
@@ -119,63 +100,5 @@ namespace InfoHidden.Utility
             return bi;
         }
 
-
-        //private BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
-        //{
-        //    BitmapSource i = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-        //                   bitmap.GetHbitmap(),
-        //                   IntPtr.Zero,
-        //                   Int32Rect.Empty,
-        //                   BitmapSizeOptions.FromEmptyOptions());
-        //    return (BitmapImage)i;
-        //}
-
-        /*
-        [DllImport("gdi32.dll", SetLastError = true)]
-        private static extern bool DeleteObject(IntPtr hObject);
-        private static ImageSource Bitmap2ImageSource(Bitmap bitmap)
-        {
-            IntPtr hBitmap = bitmap.GetHbitmap();
-
-            ImageSource imageSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-
-            if (!DeleteObject(hBitmap))
-            {
-                throw new System.ComponentModel.Win32Exception();
-            }
-
-            return imageSource;
-        }
-
-        public static Bitmap ImageSource2Bitmap(BitmapSource source)
-        {
-            Bitmap bmp = new Bitmap
-            (
-              source.PixelWidth,
-              source.PixelHeight,
-              System.Drawing.Imaging.PixelFormat.Format32bppPArgb
-            );
-
-            BitmapData data = bmp.LockBits
-            (
-                new System.Drawing.Rectangle(System.Drawing.Point.Empty, bmp.Size),
-                ImageLockMode.WriteOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppPArgb
-            );
-
-            source.CopyPixels
-            (
-              Int32Rect.Empty,
-              data.Scan0,
-              data.Height * data.Stride,
-              data.Stride
-            );
-
-            bmp.UnlockBits(data);
-
-            return bmp;
-        }
-        */
     }
 }

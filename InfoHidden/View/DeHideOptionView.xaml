@@ -8,8 +8,8 @@
         xmlns:pwHelper="clr-namespace:InfoHidden.Utility"
         mc:Ignorable="d"
         x:Name="deHideOptionView"
-        Title="DeHideOption" Height="180" Width="350"
-        ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        Title="DeHideOption" MaxHeight="220" MinHeight="220" Width="350"
+        WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type ValidationError}">
@@ -34,13 +34,14 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
 
-            <ColumnDefinition Width="3*"></ColumnDefinition>
-            <ColumnDefinition Width="7*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
             
         </Grid.ColumnDefinitions>
 
@@ -63,6 +64,7 @@
                             ElementName= passwordBox, 
                             Path=(Validation.Errors).CurrentItem}"></ContentPresenter>
 
+        
         <Label Grid.Row="2" Grid.Column="0" 
                Content="File Name"
                VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
@@ -79,7 +81,16 @@
         </Grid>
 
 
-        <StackPanel Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+        <Label Grid.Row="3" Grid.Column="0"
+               Content="Encryption Algorithm" 
+               VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
+        <ComboBox Grid.Row="3" Grid.Column="1"
+                  Margin="15,8"
+                  SelectedItem="{Binding EncryptionAlg, Mode=TwoWay}"
+                  ItemsSource="{Binding EncryptionAlgs}">
+        </ComboBox>
+        
+        <StackPanel Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
             <Button Width="55" Height="25" Margin="10"
                 Content="OK"
                 Command="{Binding SubmitCommand}"

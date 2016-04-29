@@ -35,7 +35,7 @@ namespace InfoHiddenTest.Service
 
 
         [TestMethod]
-        public void extractColorRedsTest()
+        public void ExtractColorRedsTest()
         {
             Bitmap img = CreateABitmap(300, 200, 2, 1, 1);
 
@@ -109,7 +109,7 @@ namespace InfoHiddenTest.Service
 
 
         [TestMethod]
-        public void setImageColorRedsTest2()
+        public void SetImageColorRedsTest2()
         {
             Bitmap imgToHide = CreateABitmap(2, 3, 0, 0, 0);
 
@@ -123,7 +123,7 @@ namespace InfoHiddenTest.Service
         }
 
 
-        List<byte> extractAllReds(Bitmap img)
+        List<byte> ExtractAllReds(Bitmap img)
         {
             List<byte> allReds = new List<byte>();
             for (int x = 0; x < img.Width; x++)
@@ -138,7 +138,7 @@ namespace InfoHiddenTest.Service
 
 
         [TestMethod]
-        public void writeFileHeadTest1()
+        public void WriteFileHeadTest1()
         {
             Bitmap imgToHide = CreateABitmap(200, 300, 0, 0, 0);
 
@@ -157,7 +157,7 @@ namespace InfoHiddenTest.Service
 
 
         [TestMethod]
-        public void writeFileBodyTest1()
+        public void WriteFileBodyTest1()
         {
             string dataPath = PathHelper.GetFilePath(@"\Data\testPng.png");
             byte[] bytesExpect = FileTransform.File2ByteArray(dataPath);
@@ -172,7 +172,7 @@ namespace InfoHiddenTest.Service
         }
 
         [TestMethod]
-        public void writeFileBodyTest2()
+        public void WriteFileBodyTest2()
         {
             string imagePath = PathHelper.GetFilePath(@"\Data\boy.bmp");
             Bitmap image = new Bitmap(imagePath);
@@ -187,7 +187,7 @@ namespace InfoHiddenTest.Service
 
 
         [TestMethod]
-        public void getBitsFromColorRedsLsbTest()
+        public void GetBitsFromColorRedsLsbTest()
         {
             List<byte> colorReds = new List<byte> {1, 2, 3, 4, 5, 6, 7, 8};
 

@@ -37,30 +37,48 @@ namespace InfoHidden.ViewModel
 
         public DelegateCommand<object> OpenFileCommand { get; set; }
 
-        private string password;
+        private string _password;
         public string Password
         {
-            get { return this.password; }
+            get { return this._password; }
             set
             {
-                this.password = value;
+                this._password = value;
                 RaisePropertyChanged("Password");
 
-                this.raiseAllCommandsCanExecuteChanged();
+                this.RaiseAllCommandsCanExecuteChanged();
             }
         }
 
-        private string filePath;
+        private string _filePath;
         public string FilePath
         {
-            get { return this.filePath; }
+            get { return this._filePath; }
             set
             {
-                this.filePath = value;
+                this._filePath = value;
                 RaisePropertyChanged("FilePath");
 
-                this.raiseAllCommandsCanExecuteChanged();
+                this.RaiseAllCommandsCanExecuteChanged();
             }
+        }
+
+        private string _encryptionAlg;
+        public string EncryptionAlg
+        {
+            get { return this._encryptionAlg; }
+            set
+            {
+                this._encryptionAlg = value;
+                RaisePropertyChanged("ENCRYPTIONALG");
+
+                this.RaiseAllCommandsCanExecuteChanged();
+            }
+        }
+
+        public List<String> EncryptionAlgs
+        {
+            get { return new List<string> { "TEA", "AES", "DES", "Rijndael" }; }
         }
 
         public string Error
@@ -110,7 +128,7 @@ namespace InfoHidden.ViewModel
 
         public void ExecuteSubmit(object args)
         {
-            DeHideOption deHideOption = new DeHideOption { Password = this.Password, FilePath = this.FilePath };
+            DeHideOption deHideOption = new DeHideOption { Password = this.PaddingPassword(), FilePath = this.FilePath, EncryptionAlg = this.EncryptionAlg};
             Application.Current.Properties["deHideOption"] = deHideOption;
             
             ((Window)args).Close();
@@ -145,7 +163,7 @@ namespace InfoHidden.ViewModel
 
         #endregion
 
-        public void doUpate(Window parentWin)
+        public void DoUpate(Window parentWin)
         {
             Window win = new DeHideOptionView();
             win.Owner = parentWin;
@@ -154,11 +172,27 @@ namespace InfoHidden.ViewModel
 
         }
 
-        private void raiseAllCommandsCanExecuteChanged()
+        private void RaiseAllCommandsCanExecuteChanged()
         {
             this.SubmitCommand.RaiseCanExecuteChanged();
             this.CancelCommand.RaiseCanExecuteChanged();
             this.OpenFileCommand.RaiseCanExecuteChanged();
+        }
+
+        private string PaddingPassword()
+        {
+            int shouldLen = 0;
+
+            if ("DES".Equals(this.EncryptionAlg))
+                shouldLen = 16;
+            else if ("TEA".Equals(this.EncryptionAlg))
+                shouldLen = 16;
+            else if ("AES".Equals(this.EncryptionAlg))
+                shouldLen = 32;
+            else if ("Rijndael".Equals(this.EncryptionAlg))
+                shouldLen = 32;
+
+            return string.Concat(this.Password, new string('0', shouldLen - this.Password.Length));
         }
     }
 }

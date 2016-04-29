@@ -29,69 +29,68 @@ namespace InfoHidden.ViewModel
 
         #region Properties
 
-        private string password = string.Empty;
+        private string _password = string.Empty;
 
-        private string confirmPassword = string.Empty;
+        private string _confirmPassword = string.Empty;
 
-        private string encryptionAlg = string.Empty;
+        private string _encryptionAlg = string.Empty;
 
-        private string filePath = string.Empty;
+        private string _filePath = string.Empty;
 
         public string Password
         {
             get
             {
-                return this.password;
+                return this._password;
             }
 
             set
             {
-                this.password = value;
+                this._password = value;
                 RaisePropertyChanged("PASSWORD");
 
-                this.raiseAllCommandsCanExecuteChanged();
+                this.RaiseAllCommandsCanExecuteChanged();
             }
         }
 
         public string ConfirmPassword
         {
-            get { return this.confirmPassword; }
+            get { return this._confirmPassword; }
             set
             {
-                this.confirmPassword = value;
+                this._confirmPassword = value;
                 RaisePropertyChanged("CONFIRMPASSWORD");
 
-                this.raiseAllCommandsCanExecuteChanged();
+                this.RaiseAllCommandsCanExecuteChanged();
             }
         }
 
         public string EncryptionAlg
         {
-            get { return this.encryptionAlg; }
+            get { return this._encryptionAlg; }
             set
             {
-                this.encryptionAlg = value;
+                this._encryptionAlg = value;
                 RaisePropertyChanged("ENCRYPTIONALG");
 
-                this.raiseAllCommandsCanExecuteChanged();
+                this.RaiseAllCommandsCanExecuteChanged();
             }
         }
 
         public List<String> EncryptionAlgs
         {
-            get { return new List<string> { "Tea", "TwoFish" }; }
-            set { this.EncryptionAlgs = value; }
+            get { return new List<string> { "TEA", "AES", "DES", "Rijndael" }; }
         }
 
         public string FilePath
         {
-            get { return this.filePath; }
+            get { return this._filePath; }
             set
             {
-                this.filePath = value;
+                this._filePath = value;
                 RaisePropertyChanged("FILEPATH");
 
-                this.raiseAllCommandsCanExecuteChanged();
+                this.RaiseAllCommandsCanExecuteChanged();
             }
         }
 
@@ -183,7 +182,9 @@ namespace InfoHidden.ViewModel
 
         public void ExecuteSubmit(object args)
         {
-            HideOption hideOption = new HideOption() { Password = this.Password, EncryptionAlg = this.EncryptionAlg, FilePath = this.FilePath };
+
+
+            HideOption hideOption = new HideOption() { Password = this.PaddingPassword(), EncryptionAlg = this.EncryptionAlg, FilePath = this.FilePath };
 
             Application.Current.Properties["hideOption"] = hideOption;
 
@@ -205,7 +206,7 @@ namespace InfoHidden.ViewModel
 
         #endregion
 
-        public void doUpdate(Window parentWin)
+        public void DoUpdate(Window parentWin)
         {
             Window win = new HideOptionView();
             win.Owner = parentWin;
@@ -213,12 +214,28 @@ namespace InfoHidden.ViewModel
             win.ShowDialog();
         }
 
-        private void raiseAllCommandsCanExecuteChanged()
+        private void RaiseAllCommandsCanExecuteChanged()
         {
             this.SubmitCommand.RaiseCanExecuteChanged();
             this.CancelCommand.RaiseCanExecuteChanged();
             this.OpenFileCommand.RaiseCanExecuteChanged();
         }
 
+
+        private string PaddingPassword()
+        {
+            int shouldLen = 0;
+
+            if ("DES".Equals(this.EncryptionAlg))
+                shouldLen = 16;
+            else if ("TEA".Equals(this.EncryptionAlg))
+                shouldLen = 16;
+            else if ("AES".Equals(this.EncryptionAlg))
+                shouldLen = 32;
+            else if ("Rijndael".Equals(this.EncryptionAlg))
+                shouldLen = 32;
+
+            return string.Concat(this.Password, new string('0', shouldLen - this.Password.Length));
+        }
     }
 }

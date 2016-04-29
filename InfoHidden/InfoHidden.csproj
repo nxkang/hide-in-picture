@@ -39,6 +39,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:\Users\liukang\Downloads\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -113,10 +117,11 @@
     <Compile Include="Model\HideOption.cs" />
     <Compile Include="Model\PictureInfo.cs" />
     <Compile Include="Service\Encryption\IEncryption.cs" />
+    <Compile Include="Service\Encryption\Impl\EncryptionAES.cs" />
     <Compile Include="Service\Encryption\Impl\EncryptionDES.cs" />
     <Compile Include="Service\Encryption\Impl\EncryptionFactory.cs" />
+    <Compile Include="Service\Encryption\Impl\EncryptionRijndael.cs" />
     <Compile Include="Service\Encryption\Impl\EncryptionTEA.cs" />
-    <Compile Include="Service\Encryption\Impl\EncryptionTripleDES.cs" />
     <Compile Include="Service\ServiceException\ImageHideCapacityTooSmallException.cs" />
     <Compile Include="Service\HideLSB.cs" />
     <Compile Include="Service\ServiceException\PasswordWrongException.cs" />

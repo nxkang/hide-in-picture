@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:InfoHidden.ViewModel"
         xmlns:pwHelper="clr-namespace:InfoHidden.Utility"
-        Title="HideOptionView" Height="275" Width="360" 
-        
-        x:Name="hideOptionView" WindowStartupLocation="CenterOwner" WindowStyle="ThreeDBorderWindow" ResizeMode="CanMinimize" >
+        Title="HideOptionView" MaxHeight="275" MinHeight="275" Width="360" 
+        x:Name="hideOptionView" WindowStartupLocation="CenterOwner" 
+        WindowStyle="ThreeDBorderWindow" 
+        >
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type ValidationError}">

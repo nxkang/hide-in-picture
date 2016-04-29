@@ -12,7 +12,6 @@ namespace InfoHiddenTest.Service
         public void CompressTest()
         {
             string srcFilePath = PathHelper.GetFilePath(@"/Data/boy.bmp");
-            string outFilePath = PathHelper.GetFilePath(@"/Data/boy2.bmp");
 
             var expected = FileTransform.File2ByteArray(srcFilePath);
 
