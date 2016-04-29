@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
@@ -31,6 +32,8 @@ namespace InfoHidden.ViewModel
 
             PictureInfoCommand = new DelegateCommand<object>(ExecutePictureInfo, CanExecutePictureInfo);
             PictureZoomCommand = new DelegateCommand<object>(ExecutePictureZoom, CanExecutePictureZoom);
+
+            SwitchLangCommand = new DelegateCommand<object>(this.ExecuteSwitchLang, this.CanExecuteSwitchLang);
         }
 
         #endregion
@@ -127,6 +130,8 @@ namespace InfoHidden.ViewModel
 
         public DelegateCommand<object> PictureZoomCommand { get; set; }
 
+        public DelegateCommand<object> SwitchLangCommand { get; set; }
+
         #endregion
 
         #region Properites
@@ -197,6 +202,29 @@ namespace InfoHidden.ViewModel
         #endregion
 
         #region Commands
+
+        public bool CanExecuteSwitchLang(object args)
+        {
+            return true;
+        }
+
+        public void ExecuteSwitchLang(object args)
+        {
+            string lang = args as string;
+
+            if ("zh-CN".Equals(lang))
+            {
+                App.Culture = "zh-CN";
+            }
+            else
+            {
+                App.Culture = "en-US";
+            }
+            
+            App.UpdateCulture();
+     //       MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Application.Current.TryFindResource("MsgSuccess").ToString()));
+        }
+
 
         public bool CanExecutePictureZoom(object args)
         {

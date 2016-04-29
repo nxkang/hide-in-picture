@@ -12,15 +12,24 @@
         WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
-        <DataTemplate DataType="{x:Type ValidationError}">
-            <TextBlock 
+
+        <ResourceDictionary>
+            <DataTemplate DataType="{x:Type ValidationError}">
+                <TextBlock 
                   FontStyle="Italic"
                   Foreground="Red"
                   HorizontalAlignment="Left"
                   Margin="0,1"
                   Text="{Binding Path=ErrorContent}"
                   />
-        </DataTemplate>
+            </DataTemplate>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ResourceDictionary/Lang/en-US.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/ResourceDictionary/Lang/zh-CN.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        
     </Window.Resources>
     
     <Window.DataContext>

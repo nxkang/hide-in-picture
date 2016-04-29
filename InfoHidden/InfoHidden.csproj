@@ -134,6 +134,14 @@
     <Compile Include="View\PictureInfoView.xaml.cs">
       <DependentUpon>PictureInfoView.xaml</DependentUpon>
     </Compile>
+    <Page Include="ResourceDictionary\Lang\en-US.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceDictionary\Lang\zh-CN.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ResourceDictionary\ResourceDict_MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -200,7 +208,12 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MessageBoxManager\MessageBoxManager.csproj">
+      <Project>{0e9d874e-5354-465e-9ec3-f7a35c268a8a}</Project>
+      <Name>MessageBoxManager</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="ToolbarPic\hide_file_in_picture.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

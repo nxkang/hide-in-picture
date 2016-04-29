@@ -19,7 +19,9 @@
             <ResourceDictionary.MergedDictionaries>
 
                 <ResourceDictionary Source="/ResourceDictionary/ResourceDict_MainWindow.xaml"></ResourceDictionary>
-
+                <ResourceDictionary Source="/ResourceDictionary/Lang/en-US.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/ResourceDictionary/Lang/zh-CN.xaml"></ResourceDictionary>
+                
             </ResourceDictionary.MergedDictionaries>
 
             <TransformGroup x:Key="ImageTransformResource" x:Name="ImageTransforms">
@@ -87,10 +89,19 @@
                 <MenuItem Header="100%"
                           Command="{Binding PictureZoomCommand}"
                           CommandParameter="100"></MenuItem>
-                <MenuItem Header="40%" 
+                <MenuItem Header="50%" 
                           Command="{Binding PictureZoomCommand}"
                           CommandParameter="50"></MenuItem>
                 
+            </MenuItem>
+            
+            <MenuItem Header="{DynamicResource Language}">
+                <MenuItem Header="{DynamicResource English}"
+                          Command="{Binding SwitchLangCommand}"
+                          CommandParameter="en-US"></MenuItem>
+                <MenuItem Header="{DynamicResource Chinese}"
+                          Command="{Binding SwitchLangCommand}"
+                          CommandParameter="zh-CN"></MenuItem>
             </MenuItem>
             
         </Menu>

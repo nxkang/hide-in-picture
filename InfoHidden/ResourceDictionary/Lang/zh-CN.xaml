@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:InfoHidden.ResourceDictionary.Lang">
+
+
+
+    <sys:String x:Key="RetrieveOption">提取选项</sys:String>
+    <sys:String x:Key="FilePath">文件路径</sys:String>
+    <sys:String x:Key="EncryptionAlgorithm">加密算法</sys:String>
+    
+    <sys:String x:Key="Ok">确定</sys:String>
+    <sys:String x:Key="Cancel">取消</sys:String>
+
+    <sys:String x:Key="Password">密码</sys:String>
+    <sys:String x:Key="ConfirmPassword">确认密码</sys:String>
+
+    <sys:String x:Key="WidthHeight">宽高</sys:String>
+    <sys:String x:Key="BitPerPixel">比特每像素</sys:String>
+    <sys:String x:Key="MaxHiddenCapacity">最大隐藏容量</sys:String>
+
+    <sys:String x:Key="File">文件</sys:String>
+    <sys:String x:Key="Image">图像</sys:String>
+    <sys:String x:Key="View">视图</sys:String>
+    
+
+    <sys:String x:Key="OpenCoverFile">打开载体图像...</sys:String>
+    <sys:String x:Key="OpenHiddenFile">打开隐蔽图像...</sys:String>
+    <sys:String x:Key="SavePictureAs">另存为...</sys:String>
+    <sys:String x:Key="ClosePicture">关闭图片</sys:String>
+
+    <sys:String x:Key="HideFile">隐写文件</sys:String>
+    <sys:String x:Key="RetrieveFile">提取文件</sys:String>
+    <sys:String x:Key="PictureInfo">图片信息</sys:String>
+
+    <sys:String x:Key="Language">语言</sys:String>
+    <sys:String x:Key="English">英语</sys:String>
+    <sys:String x:Key="Chinese">汉语</sys:String>
+
+</ResourceDictionary>

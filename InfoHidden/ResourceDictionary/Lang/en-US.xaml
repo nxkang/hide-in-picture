@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:local="clr-namespace:InfoHidden.ResourceDictionary.Lang">
+
+
+    <sys:String x:Key="RetrieveOption">DeHideOption</sys:String>
+    <sys:String x:Key="FilePath">File Path</sys:String>
+    <sys:String x:Key="EncryptionAlgorithm">Encryption Algorithm</sys:String>
+
+    <sys:String x:Key="Ok">OK</sys:String>
+    <sys:String x:Key="Cancel">Cancel</sys:String>
+
+    <sys:String x:Key="Password">Password</sys:String>
+    <sys:String x:Key="ConfirmPassword">Confirm Password</sys:String>
+
+    <sys:String x:Key="WidthHeight">Width Height</sys:String>
+    <sys:String x:Key="BitPerPixel">BitPerPixel</sys:String>
+    <sys:String x:Key="MaxHiddenCapacity">MaxHiddenCapacity</sys:String>
+
+    <sys:String x:Key="File">File</sys:String>
+    <sys:String x:Key="Image">Image</sys:String>
+    <sys:String x:Key="View">View</sys:String>
+
+
+    <sys:String x:Key="OpenCoverFile">Open Cover File...</sys:String>
+    <sys:String x:Key="OpenHiddenFile">Open Hidden File...</sys:String>
+    <sys:String x:Key="SavePictureAs">Save Picture As...</sys:String>
+    <sys:String x:Key="ClosePicture">Close Picture</sys:String>
+
+    <sys:String x:Key="HideFile">Hide File...</sys:String>
+    <sys:String x:Key="RetrieveFile">Retrieve File...</sys:String>
+    <sys:String x:Key="PictureInfo">Picture Info</sys:String>
+
+    <sys:String x:Key="Language">Language</sys:String>
+    <sys:String x:Key="English">English</sys:String>
+    <sys:String x:Key="Chinese">Chinese</sys:String>
+
+</ResourceDictionary>
