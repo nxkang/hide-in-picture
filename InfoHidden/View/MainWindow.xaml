@@ -19,8 +19,6 @@
             <ResourceDictionary.MergedDictionaries>
 
                 <ResourceDictionary Source="/ResourceDictionary/ResourceDict_MainWindow.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/ResourceDictionary/Lang/en-US.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/ResourceDictionary/Lang/zh-CN.xaml"></ResourceDictionary>
                 
             </ResourceDictionary.MergedDictionaries>
 
@@ -44,37 +42,39 @@
 
         <Menu>
             
-            <MenuItem Header="File">
-                <MenuItem Header="Open cover file..." 
+            <MenuItem Header="{DynamicResource File}">
+                
+                <MenuItem Header="{DynamicResource OpenCoverFile}" 
                           Command="{Binding OpenFileCommand}"
                           CommandParameter="Cover"/>
-                <MenuItem Header="Open hidden file"
+                <MenuItem Header="{DynamicResource OpenHiddenFile}"
                           Command="{Binding OpenFileCommand}"
                           CommandParameter="Hidden"></MenuItem>
-                <MenuItem Header="Save picture as..."
+                <MenuItem Header="{DynamicResource SavePictureAs}"
                           Command="{Binding SaveAsCommand}"/>
-                <MenuItem Header="Close picture..." 
+                <MenuItem Header="{DynamicResource ClosePicture}" 
                           Command="{Binding ClosePictureCommand}"/>
+                
             </MenuItem>
             
-            <MenuItem Header="Image">
+            <MenuItem Header="{DynamicResource Image}">
 
-                <MenuItem Header="Hide file..." 
+                <MenuItem Header="{DynamicResource HideFile}" 
                           Command="{Binding HideFileCommand}"
                           CommandParameter="{Binding ElementName=mainWindowView}"/>
-                <MenuItem Header="Retrieve file..."
+                <MenuItem Header="{DynamicResource RetrieveFile}"
                           Command="{Binding RetrieveFileCommand}"
                           CommandParameter="{Binding ElementName=mainWindowView}"></MenuItem>
                 
                 <Separator></Separator>
 
-                <MenuItem Header="Picture info"
+                <MenuItem Header="{DynamicResource PictureInfo}"
                           Command="{Binding PictureInfoCommand}"
                           CommandParameter="{Binding ElementName=mainWindowView}"></MenuItem>
                 
             </MenuItem>
             
-            <MenuItem Header="View">
+            <MenuItem Header="{DynamicResource View}">
                 
                 <MenuItem Header="1000%" 
                           Command="{Binding PictureZoomCommand}"
@@ -124,6 +124,7 @@
                     <Image Source="/InfoHidden;component/ToolbarPic/retrieve_file_from_picture.jpg" />
                 </Button>
             </ToolBar>
+            
             <ToolBar Band="1" BandIndex="2">
                 <Button Command="{Binding SaveAsCommand}">
                     <Image Source="/InfoHidden;component/ToolbarPic/save_as.jpg" />
@@ -147,9 +148,9 @@
                 <ScrollViewer Style="{StaticResource scrollViewerStyle}">
                     <ContentControl
                         MouseLeftButtonDown="ContentControl_MouseLeftButtonDown"
-                            MouseLeftButtonUp="ContentControl_MouseLeftButtonUp"
-                            MouseMove="ContentControl_MouseMove"
-                            MouseWheel="ContentControl_MouseWheel">
+                        MouseLeftButtonUp="ContentControl_MouseLeftButtonUp"
+                        MouseMove="ContentControl_MouseMove"
+                        MouseWheel="ContentControl_MouseWheel">
                         <Image x:Name="IMG" 
                                Stretch="Uniform"
                                RenderOptions.BitmapScalingMode="NearestNeighbor"
@@ -173,18 +174,13 @@
                 </ScrollViewer>
                 
             </Grid>
+            
         </Border>
 
         <StatusBar Grid.Row="3">
-            
             <StatusBarItem>
                 <TextBlock Text="{Binding ImageFilePath, Mode=OneWay}"></TextBlock>
             </StatusBarItem>
-            
-            <StatusBarItem HorizontalAlignment="Right" Margin="0,0,10,0">
-                <ProgressBar Width="150" Height="20" IsIndeterminate="{Binding IsBusy}"></ProgressBar>
-            </StatusBarItem>
-            
         </StatusBar>
 
     </Grid>

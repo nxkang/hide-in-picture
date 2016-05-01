@@ -8,12 +8,11 @@
         xmlns:pwHelper="clr-namespace:InfoHidden.Utility"
         mc:Ignorable="d"
         x:Name="deHideOptionView"
-        Title="DeHideOption" MaxHeight="220" MinHeight="220" Width="350"
+        Title="{DynamicResource RetrieveOption}" MaxHeight="220" MinHeight="220" Width="350"
         WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
-
-        <ResourceDictionary>
+        
             <DataTemplate DataType="{x:Type ValidationError}">
                 <TextBlock 
                   FontStyle="Italic"
@@ -23,12 +22,6 @@
                   Text="{Binding Path=ErrorContent}"
                   />
             </DataTemplate>
-
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/ResourceDictionary/Lang/en-US.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/ResourceDictionary/Lang/zh-CN.xaml"></ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
         
     </Window.Resources>
     
@@ -54,17 +47,17 @@
             
         </Grid.ColumnDefinitions>
 
-        <Label Content="Password" 
+        <Label Content="{DynamicResource Password}" 
                VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
         <PasswordBox Grid.Row="0" Grid.Column="1" 
                      Margin="15, 10"
                      x:Name="passwordBox"
                      pwHelper:PasswordBoxAssistant.BindPassword="True"
                      pwHelper:PasswordBoxAssistant.BoundPassword=
-                            "{Binding Password, 
-                            Mode=TwoWay,
-                            UpdateSourceTrigger=PropertyChanged, 
-                            ValidatesOnDataErrors=True}"
+                     "{Binding Password, 
+                     Mode=TwoWay,
+                     UpdateSourceTrigger=PropertyChanged, 
+                     ValidatesOnDataErrors=True}"
                      Validation.ErrorTemplate="{x:Null}"></PasswordBox>
         <ContentPresenter Grid.Row="1" Grid.Column="1" 
                           Margin="15, 0" 
@@ -75,7 +68,7 @@
 
         
         <Label Grid.Row="2" Grid.Column="0" 
-               Content="File Name"
+               Content="{DynamicResource FilePath}"
                VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
         <Grid Grid.Row="2" Grid.Column="1" Margin="15, 10">
             <Grid.ColumnDefinitions>
@@ -91,7 +84,7 @@
 
 
         <Label Grid.Row="3" Grid.Column="0"
-               Content="Encryption Algorithm" 
+               Content="{DynamicResource EncryptionAlgorithm}" 
                VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
         <ComboBox Grid.Row="3" Grid.Column="1"
                   Margin="15,8"
@@ -101,11 +94,11 @@
         
         <StackPanel Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
             <Button Width="55" Height="25" Margin="10"
-                Content="OK"
+                Content="{DynamicResource Ok}"
                 Command="{Binding SubmitCommand}"
                 CommandParameter="{Binding ElementName=deHideOptionView}"></Button>
             <Button Width="55" Height="25" Margin="10"
-                Content="Cancel"
+                Content="{DynamicResource Cancel}"
                 Command="{Binding CancelCommand}" 
                 CommandParameter="{Binding ElementName=deHideOptionView}"
                 IsCancel="True"></Button>

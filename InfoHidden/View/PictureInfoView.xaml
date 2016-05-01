@@ -6,19 +6,13 @@
         xmlns:local="clr-namespace:InfoHidden.View"
         xmlns:vm="clr-namespace:InfoHidden.ViewModel"
         mc:Ignorable="d"
-        Title="PictureInfo" Height="300" Width="300">
+        Title="{DynamicResource PictureInfo}" Height="180" Width="300">
     
     <Window.DataContext>
         <vm:PictureInfoViewModel></vm:PictureInfoViewModel>
     </Window.DataContext>
 
     <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/ResourceDictionary/Lang/en-US.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/ResourceDictionary/Lang/zh-CN.xaml"></ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-        
 
             <Style x:Key="HeaderStyle" TargetType="{x:Type TextBlock}">
                 <Setter Property="HorizontalAlignment" Value="Center"></Setter>
@@ -28,7 +22,7 @@
             <Style x:Key="ContentStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource HeaderStyle}">
                 <Setter Property="TextWrapping" Value="WrapWithOverflow"></Setter>
             </Style>
-        </ResourceDictionary>
+       
     </Window.Resources>
     
     <Grid>
@@ -44,19 +38,19 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="文件路径" Style="{StaticResource HeaderStyle}"></TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource PictureInfo}" Style="{StaticResource HeaderStyle}"></TextBlock>
         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FilePath}" Style="{StaticResource ContentStyle}"></TextBlock>
 
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="宽高" Style="{StaticResource HeaderStyle}"></TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource WidthHeight}" Style="{StaticResource HeaderStyle}"></TextBlock>
         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Dimension}" Style="{StaticResource ContentStyle}"></TextBlock>
 
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="比特每像素" Style="{StaticResource HeaderStyle}"></TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource BitPerPixel}" Style="{StaticResource HeaderStyle}"></TextBlock>
         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding BitsPerPixel}" Style="{StaticResource ContentStyle}"></TextBlock>
 
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="最大隐藏容量" Style="{StaticResource HeaderStyle}"></TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource MaxHiddenCapacity}" Style="{StaticResource HeaderStyle}"></TextBlock>
         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding MaxCapacity}" Style="{StaticResource ContentStyle}"></TextBlock>
 
     </Grid>

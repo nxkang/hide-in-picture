@@ -58,26 +58,42 @@ namespace InfoHidden
         }
         public static void UpdateCulture()
         {
-            List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
-            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
-            {
-                dictionaryList.Add(dictionary);
-            }
-            string requestedCulture = string.Format(@"ResourceDictionary/Lang/{0}.xaml", Culture);
 
-            ResourceDictionary resourceDictionary = dictionaryList[0];
+            if (String.IsNullOrEmpty(Culture))
+                return;
+
+            //Copy all MergedDictionarys into a auxiliar list.
+            var dictionaryList = Application.Current.Resources.MergedDictionaries.ToList();
+
+            //Search for the specified culture.     
+            string requestedCulture = string.Format(@"ResourceDictionary/Lang/{0}.xaml", Culture);
+            var resourceDictionary = dictionaryList.
+                FirstOrDefault(d => d.Source.OriginalString == requestedCulture);
 
             if (resourceDictionary == null)
             {
+                //If not found, select our default language.             
                 requestedCulture = @"ResourceDictionary/Lang/en-US.xaml";
-                resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString.Equals(requestedCulture));
+                resourceDictionary = dictionaryList.
+                    FirstOrDefault(d => d.Source.OriginalString == requestedCulture);
             }
+
+            //If we have the requested resource, remove it from the list and place at the end.     
+            //Then this language will be our string table to use.      
             if (resourceDictionary != null)
             {
-                var oldDicts = Application.Current.Resources.MergedDictionaries;
-                
+                Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
                 Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             }
+
+            //Inform the threads of the new culture.     
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(Culture);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(Culture);
+
+            MessageBoxManager.Unregister();
+            //MessageBoxManager.OK = Application.Current.TryFindResource("BtnOK").ToString();
+            MessageBoxManager.Register();
+        
         }
         #endregion
     }

@@ -10,7 +10,6 @@
 
     <Window.Resources>
 
-        <ResourceDictionary>
             <DataTemplate DataType="{x:Type ValidationError}">
                 <TextBlock 
                   FontStyle="Italic"
@@ -20,12 +19,6 @@
                   Text="{Binding Path=ErrorContent}"
                   />
             </DataTemplate>
-
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/ResourceDictionary/Lang/en-US.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/ResourceDictionary/Lang/zh-CN.xaml"></ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
 
     </Window.Resources>
 
@@ -55,7 +48,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0"
-               Content="Enter Password" 
+               Content="{DynamicResource Password}" 
                VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
         <PasswordBox Grid.Row="0" Grid.Column="1" 
                      x:Name="passwordBox"
@@ -76,7 +69,7 @@
         
 
         <Label Grid.Row="2" Grid.Column="0"
-               Content="Confirm Password" 
+               Content="{DynamicResource ConfirmPassword}" 
                VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
         <PasswordBox Grid.Row="2" Grid.Column="1" 
                      x:Name="confirmPasswordBox"
@@ -94,7 +87,7 @@
 
         
         <Label Grid.Row="4" Grid.Column="0"
-               Content="File Name" 
+               Content="{DynamicResource FilePath}" 
                VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
         <Grid Grid.Row="4" Grid.Column="1" Margin="15, 8">
             <Grid.ColumnDefinitions>
@@ -109,7 +102,7 @@
         </Grid>
 
         <Label Grid.Row="5" Grid.Column="0"
-               Content="Encryption Algorithm" 
+               Content="{DynamicResource EncryptionAlgorithm}" 
                VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
         <ComboBox Grid.Row="5" Grid.Column="1"
                   Margin="15,8"
@@ -125,11 +118,11 @@
                     Orientation="Horizontal">
             
             <Button Width="55" Height="25" Margin="10"
-                Content="OK"
+                Content="{DynamicResource Ok}"
                 Command="{Binding SubmitCommand}"
                 CommandParameter="{Binding ElementName=hideOptionView}"></Button>
             <Button Width="55" Height="25" Margin="10"
-                Content="Cancel"
+                Content="{DynamicResource Cancel}"
                 Command="{Binding CancelCommand}" 
                 CommandParameter="{Binding ElementName=hideOptionView}"
                 IsCancel="True"></Button>
