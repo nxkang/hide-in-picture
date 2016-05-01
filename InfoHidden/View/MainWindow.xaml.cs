@@ -26,7 +26,7 @@ namespace InfoHidden.View
             {
                 return;
             }
-            var group = IMG.FindResource("ImageTransformResource") as TransformGroup;
+            var group = Img.FindResource("ImageTransformResource") as TransformGroup;
             var transform = group.Children[1] as TranslateTransform;
             var position = e.GetPosition(img);
             transform.X -= mouseXY.X - position.X;
@@ -91,7 +91,7 @@ namespace InfoHidden.View
                 return;
             }
             var point = e.GetPosition(img);
-            var group = IMG.FindResource("ImageTransformResource") as TransformGroup;
+            var group = Img.FindResource("ImageTransformResource") as TransformGroup;
             var delta = e.Delta * 0.001;
             DowheelZoom(group, point, delta);
         }

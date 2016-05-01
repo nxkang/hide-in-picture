@@ -288,6 +288,9 @@ namespace InfoHidden.ViewModel
             var defaultExt = "bmp";
             var savePath = GetFilePathFromFileDialog.getFilePahtFromSaveFileDialog(fileTypesPattern, defaultExt);
 
+            if(savePath.Equals(string.Empty))
+                return;
+
             if (File.Exists(savePath))
                 File.Delete(savePath);
             _hiddenImageBitmapCache.Save(savePath);

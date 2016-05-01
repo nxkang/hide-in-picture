@@ -22,7 +22,7 @@
                 
             </ResourceDictionary.MergedDictionaries>
 
-            <TransformGroup x:Key="ImageTransformResource" x:Name="ImageTransforms">
+            <TransformGroup x:Key="ImageTransformResource" >
                 <ScaleTransform x:Name="sfr"/>
                 <TranslateTransform x:Name="tlt"/>
             </TransformGroup>
@@ -114,20 +114,20 @@
                 </Style>
             </ToolBarTray.Resources>
 
-            <ToolBar Band="1" BandIndex="1">
+            <ToolBar >
                 <Button Command="{Binding HideFileCommand}"
                         CommandParameter="{Binding ElementName=mainWindowView}">
-                    <Image Source="/InfoHidden;component/ToolbarPic/hide_file_in_picture.png" />
+                    <Image Source="/ToolbarPic/hide_file_in_picture.png" />
                 </Button>
                 <Button Command="{Binding RetrieveFileCommand}"
                         CommandParameter="{Binding ElementName=mainWindowView}">
-                    <Image Source="/InfoHidden;component/ToolbarPic/retrieve_file_from_picture.jpg" />
+                    <Image Source="/ToolbarPic/retrieve_file_from_picture.jpg" />
                 </Button>
             </ToolBar>
             
-            <ToolBar Band="1" BandIndex="2">
+            <ToolBar >
                 <Button Command="{Binding SaveAsCommand}">
-                    <Image Source="/InfoHidden;component/ToolbarPic/save_as.jpg" />
+                    <Image Source="/ToolbarPic/save_as.jpg" />
                 </Button>
             </ToolBar>
             
@@ -151,7 +151,7 @@
                         MouseLeftButtonUp="ContentControl_MouseLeftButtonUp"
                         MouseMove="ContentControl_MouseMove"
                         MouseWheel="ContentControl_MouseWheel">
-                        <Image x:Name="IMG" 
+                        <Image x:Name="Img" 
                                Stretch="Uniform"
                                RenderOptions.BitmapScalingMode="NearestNeighbor"
                                 RenderTransform="{StaticResource ImageTransformResource}" 
@@ -165,7 +165,7 @@
                 <ScrollViewer Grid.Column="2" 
                               Style="{StaticResource scrollViewerStyle}">
                     <ContentControl>
-                        <Image x:Name="hiddenImg"
+                        <Image x:Name="HiddenImg"
                                RenderOptions.BitmapScalingMode="NearestNeighbor"
                             RenderTransform="{StaticResource ImageTransformResource}" 
                             Source="{Binding HiddenImage}" MinHeight="300"></Image>
