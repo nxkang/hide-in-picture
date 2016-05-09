@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:InfoHidden.ViewModel"
         xmlns:pwHelper="clr-namespace:InfoHidden.Utility"
-        Title="HideOptionView" MaxHeight="275" MinHeight="275" Width="360" 
+        Title="{DynamicResource HideOption}" MaxHeight="275" MinHeight="275" Width="360" 
         x:Name="hideOptionView" WindowStartupLocation="CenterOwner" 
         WindowStyle="ThreeDBorderWindow" 
         >

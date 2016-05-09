@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using InfoHidden.Service;
 using InfoHidden.Utility;
 using InfoHiddenTest.UnitTestUtilities;
+using InfoHiddenTest.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion

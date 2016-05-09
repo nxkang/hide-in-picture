@@ -81,6 +81,22 @@ namespace InfoHidden.ViewModel
             get { return new List<string> { "TEA", "AES", "DES", "Rijndael" }; }
         }
 
+        private bool _isValid;
+
+        public bool IsValid
+        {
+            get
+            {
+                this.ValidatePassword(this.Password);
+                return this._isValid;
+            }
+            set
+            {
+                this._isValid = value; 
+                this.RaiseAllCommandsCanExecuteChanged();
+            }
+        }          
+
         public string Error
         {
             get
@@ -107,15 +123,24 @@ namespace InfoHidden.ViewModel
         private string ValidatePassword(string password)
         {
             if (string.IsNullOrEmpty(password))
+            {
+                this._isValid = false;
                 return "";
+            }
+                
 
             string pattern = @"^\w{8,16}$";
 
             if (!Regex.IsMatch(password, pattern))
+            {
+                this._isValid = false;
                 return "请输入8-16位字符.";
+            }
 
+            this._isValid = true;
             return "";
         }
+
 
         #endregion
 
@@ -123,7 +148,10 @@ namespace InfoHidden.ViewModel
 
         public bool CanExecuteSubmit(object args)
         {
-            return !string.Empty.Equals(this.Password) && !string.Empty.Equals(this.FilePath);
+            return !string.IsNullOrEmpty(this.Password)
+                && !string.IsNullOrEmpty(this.FilePath)
+                && !string.IsNullOrEmpty(this.EncryptionAlg)
+                && this.IsValid;
         }
 
         public void ExecuteSubmit(object args)
@@ -157,7 +185,7 @@ namespace InfoHidden.ViewModel
         {
             string fileTypesPattern = "All files (*.*)|*.*";
             string defaultExt = string.Empty;
-            this.FilePath = GetFilePathFromFileDialog.getFilePahtFromSaveFileDialog(fileTypesPattern, defaultExt);
+            this.FilePath = GetFilePathFromFileDialog.GetFilePahtFromSaveFileDialog(fileTypesPattern, defaultExt);
         }
 
 

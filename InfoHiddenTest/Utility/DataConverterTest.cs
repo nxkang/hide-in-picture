@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Policy;
 using InfoHidden.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace InfoHiddenTest.Service
+namespace InfoHiddenTest.Utility
 {
 
     [TestClass()]

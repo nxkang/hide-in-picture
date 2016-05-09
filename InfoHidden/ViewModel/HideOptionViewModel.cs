@@ -163,7 +163,7 @@ namespace InfoHidden.ViewModel
         {
             string fileTypesPattern = "All files (*.*)|*.*";
             string defaultExt = string.Empty;
-            this.FilePath = GetFilePathFromFileDialog.getFilePathFromOpenFileDialog(fileTypesPattern, defaultExt);
+            this.FilePath = GetFilePathFromFileDialog.GetFilePathFromOpenFileDialog(fileTypesPattern, defaultExt);
         }
 
         public bool CanExecuteSubmit(object args)

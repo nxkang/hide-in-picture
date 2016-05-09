@@ -8,7 +8,7 @@ namespace InfoHidden.Utility
 {
     public class GetFilePathFromFileDialog
     {
-        public static string getFilePathFromOpenFileDialog(string fileTypesPattern, string defaultExt)
+        public static string GetFilePathFromOpenFileDialog(string fileTypesPattern, string defaultExt)
         {
             System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
             openFileDialog.Title = "选择文件";
@@ -28,7 +28,7 @@ namespace InfoHidden.Utility
             return openFileDialog.FileName;
         }
 
-        public static string getFilePahtFromSaveFileDialog(string fileTypesPattern, string defaultExt)
+        public static string GetFilePahtFromSaveFileDialog(string fileTypesPattern, string defaultExt)
         {
             System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 

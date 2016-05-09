@@ -3,7 +3,7 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     >
 
-    
+    <sys:String x:Key="HideOption">HideOption</sys:String>
     <sys:String x:Key="RetrieveOption">DeHideOption</sys:String>
     <sys:String x:Key="FilePath">File Path</sys:String>
     <sys:String x:Key="EncryptionAlgorithm">Encryption Algorithm</sys:String>
@@ -13,6 +13,8 @@
 
     <sys:String x:Key="Password">Password</sys:String>
     <sys:String x:Key="ConfirmPassword">Confirm Password</sys:String>
+    
+    
 
     <sys:String x:Key="WidthHeight">Width Height</sys:String>
     <sys:String x:Key="BitPerPixel">BitPerPixel</sys:String>

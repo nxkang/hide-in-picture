@@ -184,21 +184,6 @@ namespace InfoHidden.ViewModel
             }
         }
 
-        private bool _isBusy;
-
-        public bool IsBusy
-        {
-            get { return _isBusy; }
-
-            set
-            {
-                _isBusy = value;
-                RaisePropertyChanged(nameof(IsBusy));
-
-                RaiseAllCommandsCanExecuteChanged();
-            }
-        }
-
         #endregion
 
         #region Commands
@@ -266,12 +251,9 @@ namespace InfoHidden.ViewModel
 
         public void ExecuteEraseFile()
         {
-            IsBusy = true;
-
+            
             HideLSB.Erase(ref _hiddenImageBitmapCache);
             HiddenImage = FileTransform.Bitmap2BitmapImage(_hiddenImageBitmapCache);
-
-            IsBusy = false;
 
             ShowMessageBox("擦除已完成.", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -286,7 +268,7 @@ namespace InfoHidden.ViewModel
         {
             var fileTypesPattern = "bmp file (*.bmp)|*.bmp|All files (*.*)|*.*";
             var defaultExt = "bmp";
-            var savePath = GetFilePathFromFileDialog.getFilePahtFromSaveFileDialog(fileTypesPattern, defaultExt);
+            var savePath = GetFilePathFromFileDialog.GetFilePahtFromSaveFileDialog(fileTypesPattern, defaultExt);
 
             if(savePath.Equals(string.Empty))
                 return;
@@ -308,7 +290,7 @@ namespace InfoHidden.ViewModel
             {
                 var fileTypesPattern = "bmp file (*.bmp)|*.bmp|All files (*.*)|*.*";
                 var defaultExt = "bmp";
-                var imageUri = GetFilePathFromFileDialog.getFilePathFromOpenFileDialog(fileTypesPattern, defaultExt);
+                var imageUri = GetFilePathFromFileDialog.GetFilePathFromOpenFileDialog(fileTypesPattern, defaultExt);
 
                 if (string.IsNullOrEmpty(imageUri))
                     return;
@@ -375,9 +357,6 @@ namespace InfoHidden.ViewModel
 
                 _hiddenImageBitmapCache = tmpBitmapCacheToHide;
                 HiddenImage = FileTransform.Bitmap2BitmapImage(_hiddenImageBitmapCache);
-
-
-                
             }
             catch (ImageHideCapacityTooSmallException)
             {
@@ -386,6 +365,10 @@ namespace InfoHidden.ViewModel
             catch (IOException)
             {
                 ShowMessageBox("文件无法正常打开", "错误");
+            }
+            catch (Exception)
+            {
+                ShowMessageBox("系统错误", "错误");
             }
         }
 
@@ -404,8 +387,6 @@ namespace InfoHidden.ViewModel
                 if (deHideOption == null)
                     return;
 
-                IsBusy = true;
-
                 var ciphertext = HideLSB.DeHide(_hiddenImageBitmapCache);
 
                 IEncryption encryptor = EncryptionFactory.CreateEncryption(deHideOption.EncryptionAlg);
@@ -416,7 +397,7 @@ namespace InfoHidden.ViewModel
                     File.Delete(deHideOption.FilePath);
                 FileTransform.ByteArray2File(deHideOption.FilePath, deZipdata);
 
-                IsBusy = false;
+                
 
                 ShowMessageBox("Retrieve file is done.", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }

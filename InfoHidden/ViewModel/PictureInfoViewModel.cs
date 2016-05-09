@@ -13,7 +13,6 @@ namespace InfoHidden.ViewModel
 
         public PictureInfoViewModel()
         {
-            
         }
 
         #region Fileds

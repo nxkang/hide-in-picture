@@ -30,6 +30,7 @@
     </Window.DataContext>
     
     <Grid>
+        
         <Grid.RowDefinitions>
 
             <RowDefinition Height="Auto"></RowDefinition>
@@ -103,5 +104,6 @@
                 CommandParameter="{Binding ElementName=deHideOptionView}"
                 IsCancel="True"></Button>
         </StackPanel>
+        
     </Grid>
 </Window>

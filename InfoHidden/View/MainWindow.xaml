@@ -2,8 +2,6 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:InfoHidden.ViewModel"
-        xmlns:presentation="clr-namespace:InfoHidden.TriggerAction"
-        xmlns:converter="clr-namespace:InfoHidden.Converters"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"       
         Title="Hide In Picture" Height="Auto" Width="Auto"
         x:Name="mainWindowView" WindowStartupLocation="CenterScreen">
@@ -17,9 +15,7 @@
         <ResourceDictionary>
             
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="/ResourceDictionary/ResourceDict_MainWindow.xaml"></ResourceDictionary>
-                
             </ResourceDictionary.MergedDictionaries>
 
             <TransformGroup x:Key="ImageTransformResource" >
