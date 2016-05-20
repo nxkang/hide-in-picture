@@ -1,49 +1,51 @@
-﻿using InfoHidden.Model;
-using InfoHidden.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-
-namespace InfoHidden.ViewModel
+﻿namespace InfoHidden.ViewModel
 {
+    using System.Windows;
+
+    using InfoHidden.Model;
+    using InfoHidden.View;
+
     public class PictureInfoViewModel
     {
-
-        public PictureInfoViewModel()
-        {
-        }
-
-        #region Fileds
+        #region Static fields
 
         private static PictureInfo pictureInfo;
 
         #endregion
 
+        #region Constructors and destructors
 
-        #region Properties
+        public PictureInfoViewModel()
+        {
+        }
 
-        public string FilePath => pictureInfo.FilePath;
+        #endregion
 
-        public string Dimension => pictureInfo.Width + " X " + pictureInfo.Height;
+        #region Public properties
 
         public string BitsPerPixel => pictureInfo.BitsPerPixel;
 
-        public string MaxCapacity => pictureInfo.MaxCapacity +　"KB";
+        public string Dimension => pictureInfo.Width + " X " + pictureInfo.Height;
+
+        public string FilePath => pictureInfo.FilePath;
+
+        public string MaxCapacity => pictureInfo.MaxCapacity + "KB";
 
         #endregion
+
+        #region Public methods
 
         public void DoUpdate(Window parentWin)
         {
             pictureInfo = (PictureInfo)Application.Current.Properties["pictureInfo"];
             Application.Current.Properties["pictureInfo"] = null;
 
-
             Window win = new PictureInfoView();
             win.Owner = parentWin;
 
             win.ShowDialog();
         }
+
+        #endregion
     }
 }

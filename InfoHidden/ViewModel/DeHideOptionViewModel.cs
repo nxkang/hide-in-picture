@@ -1,101 +1,77 @@
-﻿using InfoHidden.Model;
-using InfoHidden.Utility;
-using InfoHidden.View;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
-
-namespace InfoHidden.ViewModel
+﻿namespace InfoHidden.ViewModel
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Text.RegularExpressions;
+    using System.Windows;
+
+    using InfoHidden.Model;
+    using InfoHidden.Utility;
+    using InfoHidden.View;
+
+    using Microsoft.Practices.Prism.Commands;
+    using Microsoft.Practices.Prism.ViewModel;
+
     public class DeHideOptionViewModel : NotificationObject, IDataErrorInfo
     {
+        #region Fields
 
-        #region ctor
+        private string _encryptionAlg;
+
+        private string _filePath;
+
+        private bool _isValid;
+
+        private string _password;
+
+        #endregion
+
+        #region Constructors and destructors
 
         public DeHideOptionViewModel()
         {
-            this.SubmitCommand = new DelegateCommand<object>(new Action<object>(this.ExecuteSubmit), new Func<object, bool>(this.CanExecuteSubmit));
-            this.CancelCommand = new DelegateCommand<object>(new Action<object>(this.ExecuteCancel), new Func<object, bool>(this.CanExecuteCancel));
+            this.SubmitCommand = new DelegateCommand<object>(
+                new Action<object>(this.ExecuteSubmit), 
+                new Func<object, bool>(this.CanExecuteSubmit));
+            this.CancelCommand = new DelegateCommand<object>(
+                new Action<object>(this.ExecuteCancel), 
+                new Func<object, bool>(this.CanExecuteCancel));
 
-            this.OpenFileCommand = new DelegateCommand<object>(new Action<object>(this.ExecuteOpenFile), new Func<object, bool>(this.CanExecuteOpenFile));
+            this.OpenFileCommand = new DelegateCommand<object>(
+                new Action<object>(this.ExecuteOpenFile), 
+                new Func<object, bool>(this.CanExecuteOpenFile));
         }
 
         #endregion
 
-
-        #region Properties
-
-        public DelegateCommand<object> SubmitCommand { get; set; }
+        #region Public properties
 
         public DelegateCommand<object> CancelCommand { get; set; }
 
-        public DelegateCommand<object> OpenFileCommand { get; set; }
-
-        private string _password;
-        public string Password
-        {
-            get { return this._password; }
-            set
-            {
-                this._password = value;
-                RaisePropertyChanged("Password");
-
-                this.RaiseAllCommandsCanExecuteChanged();
-            }
-        }
-
-        private string _filePath;
-        public string FilePath
-        {
-            get { return this._filePath; }
-            set
-            {
-                this._filePath = value;
-                RaisePropertyChanged("FilePath");
-
-                this.RaiseAllCommandsCanExecuteChanged();
-            }
-        }
-
-        private string _encryptionAlg;
         public string EncryptionAlg
-        {
-            get { return this._encryptionAlg; }
-            set
-            {
-                this._encryptionAlg = value;
-                RaisePropertyChanged("ENCRYPTIONALG");
-
-                this.RaiseAllCommandsCanExecuteChanged();
-            }
-        }
-
-        public List<String> EncryptionAlgs
-        {
-            get { return new List<string> { "TEA", "AES", "DES", "Rijndael" }; }
-        }
-
-        private bool _isValid;
-
-        public bool IsValid
         {
             get
             {
-                this.ValidatePassword(this.Password);
-                return this._isValid;
+                return this._encryptionAlg;
             }
+
             set
             {
-                this._isValid = value; 
+                this._encryptionAlg = value;
+                this.RaisePropertyChanged("ENCRYPTIONALG");
+
                 this.RaiseAllCommandsCanExecuteChanged();
             }
-        }          
+        }
+
+        public List<string> EncryptionAlgs
+        {
+            get
+            {
+                return new List<string> { "TEA", "AES", "DES", "Rijndael" };
+            }
+        }
 
         public string Error
         {
@@ -105,12 +81,66 @@ namespace InfoHidden.ViewModel
             }
         }
 
+        public string FilePath
+        {
+            get
+            {
+                return this._filePath;
+            }
+
+            set
+            {
+                this._filePath = value;
+                this.RaisePropertyChanged("FilePath");
+
+                this.RaiseAllCommandsCanExecuteChanged();
+            }
+        }
+
+        public bool IsValid
+        {
+            get
+            {
+                this.ValidatePassword(this.Password);
+                return this._isValid;
+            }
+
+            set
+            {
+                this._isValid = value;
+                this.RaiseAllCommandsCanExecuteChanged();
+            }
+        }
+
+        public DelegateCommand<object> OpenFileCommand { get; set; }
+
+        public string Password
+        {
+            get
+            {
+                return this._password;
+            }
+
+            set
+            {
+                this._password = value;
+                this.RaisePropertyChanged("Password");
+
+                this.RaiseAllCommandsCanExecuteChanged();
+            }
+        }
+
+        public DelegateCommand<object> SubmitCommand { get; set; }
+
+        #endregion
+
+        #region Public indexers
+
         public string this[string columnName]
         {
             get
             {
-                if (columnName.Equals("Password"))
-                    return this.ValidatePassword(this.Password);
+                if (columnName.Equals("Password")) return this.ValidatePassword(this.Password);
 
                 throw new InvalidOperationException();
             }
@@ -118,16 +148,87 @@ namespace InfoHidden.ViewModel
 
         #endregion
 
-        #region
+        #region Public methods
+
+        public bool CanExecuteCancel(object args)
+        {
+            return true;
+        }
+
+        public bool CanExecuteOpenFile(object args)
+        {
+            return true;
+        }
+
+        public bool CanExecuteSubmit(object args)
+        {
+            return !string.IsNullOrEmpty(this.Password) && !string.IsNullOrEmpty(this.FilePath)
+                   && !string.IsNullOrEmpty(this.EncryptionAlg) && this.IsValid;
+        }
+
+        public void DoUpate(Window parentWin)
+        {
+            Window win = new DeHideOptionView();
+            win.Owner = parentWin;
+
+            win.ShowDialog();
+        }
+
+        public void ExecuteCancel(object args)
+        {
+            ((Window)args).Close();
+        }
+
+        public void ExecuteOpenFile(object args)
+        {
+            string fileTypesPattern = "All files (*.*)|*.*";
+            string defaultExt = string.Empty;
+            this.FilePath = GetFilePathFromFileDialog.GetFilePahtFromSaveFileDialog(fileTypesPattern, defaultExt);
+        }
+
+        public void ExecuteSubmit(object args)
+        {
+            DeHideOption deHideOption = new DeHideOption
+                                            {
+                                                Password = this.PaddingPassword(), 
+                                                FilePath = this.FilePath, 
+                                                EncryptionAlg = this.EncryptionAlg
+                                            };
+            Application.Current.Properties["deHideOption"] = deHideOption;
+
+            ((Window)args).Close();
+        }
+
+        #endregion
+
+        #region Other methods
+
+        private string PaddingPassword()
+        {
+            int shouldLen = 0;
+
+            if ("DES".Equals(this.EncryptionAlg)) shouldLen = 16;
+            else if ("TEA".Equals(this.EncryptionAlg)) shouldLen = 16;
+            else if ("AES".Equals(this.EncryptionAlg)) shouldLen = 32;
+            else if ("Rijndael".Equals(this.EncryptionAlg)) shouldLen = 32;
+
+            return string.Concat(this.Password, new string('0', shouldLen - this.Password.Length));
+        }
+
+        private void RaiseAllCommandsCanExecuteChanged()
+        {
+            this.SubmitCommand.RaiseCanExecuteChanged();
+            this.CancelCommand.RaiseCanExecuteChanged();
+            this.OpenFileCommand.RaiseCanExecuteChanged();
+        }
 
         private string ValidatePassword(string password)
         {
             if (string.IsNullOrEmpty(password))
             {
                 this._isValid = false;
-                return "";
+                return string.Empty;
             }
-                
 
             string pattern = @"^\w{8,16}$";
 
@@ -138,89 +239,9 @@ namespace InfoHidden.ViewModel
             }
 
             this._isValid = true;
-            return "";
+            return string.Empty;
         }
-
 
         #endregion
-
-        #region Commands
-
-        public bool CanExecuteSubmit(object args)
-        {
-            return !string.IsNullOrEmpty(this.Password)
-                && !string.IsNullOrEmpty(this.FilePath)
-                && !string.IsNullOrEmpty(this.EncryptionAlg)
-                && this.IsValid;
-        }
-
-        public void ExecuteSubmit(object args)
-        {
-            DeHideOption deHideOption = new DeHideOption { Password = this.PaddingPassword(), FilePath = this.FilePath, EncryptionAlg = this.EncryptionAlg};
-            Application.Current.Properties["deHideOption"] = deHideOption;
-            
-            ((Window)args).Close();
-        }
-
-
-
-        public bool CanExecuteCancel(object args)
-        {
-            return true;
-        }
-
-        public void ExecuteCancel(object args)
-        {
-            ( (Window)args ).Close();
-        }
-
-
-
-        public bool CanExecuteOpenFile(object args)
-        {
-            return true;
-        }
-
-        public void ExecuteOpenFile(object args)
-        {
-            string fileTypesPattern = "All files (*.*)|*.*";
-            string defaultExt = string.Empty;
-            this.FilePath = GetFilePathFromFileDialog.GetFilePahtFromSaveFileDialog(fileTypesPattern, defaultExt);
-        }
-
-
-        #endregion
-
-        public void DoUpate(Window parentWin)
-        {
-            Window win = new DeHideOptionView();
-            win.Owner = parentWin;
-
-            win.ShowDialog();
-
-        }
-
-        private void RaiseAllCommandsCanExecuteChanged()
-        {
-            this.SubmitCommand.RaiseCanExecuteChanged();
-            this.CancelCommand.RaiseCanExecuteChanged();
-            this.OpenFileCommand.RaiseCanExecuteChanged();
-        }
-
-        private string PaddingPassword()
-        {
-            int shouldLen = 0;
-
-            if ("DES".Equals(this.EncryptionAlg))
-                shouldLen = 16;
-            else if ("TEA".Equals(this.EncryptionAlg))
-                shouldLen = 16;
-            else if ("AES".Equals(this.EncryptionAlg))
-                shouldLen = 32;
-            else if ("Rijndael".Equals(this.EncryptionAlg))
-                shouldLen = 32;
-
-            return string.Concat(this.Password, new string('0', shouldLen - this.Password.Length));
-        }
     }
 }

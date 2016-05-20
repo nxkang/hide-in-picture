@@ -1,23 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
-using InfoHidden.Service.ServiceException;
-using System.Diagnostics;
-using InfoHidden.Utility;
-
-namespace InfoHidden.Service
+﻿namespace InfoHidden.Service
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+
+    using InfoHidden.Service.ServiceException;
+    using InfoHidden.Utility;
+
     public class HideLSB
     {
-        #region CONSTANT
+        #region Constants
 
-        const int FILE_HEAD_BIT_LENGTH = 32;
+        private static readonly int FILE_HEAD_BIT_LENGTH = 32;
 
         #endregion
 
-        #region public methods
+        #region Public methods
+
+        public static byte[] DeHide(Bitmap image)
+        {
+            int? x = null;
+            int? y = null;
+
+            int dataBitLength = ReadFileHead(image, out x, out y);
+
+            Debug.Assert(dataBitLength % 8 == 0);
+
+            byte[] data = ReadFileBody(image, dataBitLength, (int)x, (int)y);
+
+            return data;
+        }
 
         public static void Erase(ref Bitmap image)
         {
@@ -33,10 +46,43 @@ namespace InfoHidden.Service
             }
         }
 
+        public static List<byte> ExtractBitsFromColorRedsLsb(List<byte> colorReds)
+        {
+            List<byte> bits = new List<byte>(colorReds.Count);
+            for (int i = 0; i < colorReds.Count; i++)
+            {
+                bits.Add((byte)DataConverter.GetOneBitFromByte(colorReds[i], 0));
+            }
+
+            return bits;
+        }
+
+        public static List<byte> ExtractColorReds(Bitmap image, int length, int x, int y)
+        {
+            List<byte> colorReds = new List<byte>(length);
+
+            for (; x < image.Width; x++)
+            {
+                for (; y < image.Height; y++)
+                {
+                    colorReds.Add(image.GetPixel(x, y).R);
+
+                    if (colorReds.Count >= length)
+                    {
+                        return colorReds;
+                    }
+                }
+
+                y = 0;
+            }
+
+            throw new InvalidOperationException();
+        }
+
         public static void Hide(ref Bitmap image, byte[] data)
         {
-            int imageBitDataCapacity = image.Width*image.Height;
-            int dataBitLength = data.Length*8;
+            int imageBitDataCapacity = image.Width * image.Height;
+            int dataBitLength = data.Length * 8;
 
             if (dataBitLength + FILE_HEAD_BIT_LENGTH > imageBitDataCapacity)
             {
@@ -48,58 +94,7 @@ namespace InfoHidden.Service
 
             WriteFileHead(ref image, dataBitLength, out x, out y);
 
-            WriteFileBody(ref image, data, (int) x, (int) y);
-        }
-
-        public static byte[] DeHide(Bitmap image)
-        {
-            int? x = null;
-            int? y = null;
-
-            int dataBitLength = ReadFileHead(image, out x, out y);
-
-            Debug.Assert(dataBitLength%8 == 0);
-
-            byte[] data = ReadFileBody(image, dataBitLength, (int) x, (int) y);
-
-            return data;
-        }
-
-        #endregion
-
-        #region private methods
-
-        public static void WriteFileHead(ref Bitmap image, int dataBitLength, out int? x, out int? y)
-        {
-            x = 0;
-            y = 0;
-            List<byte> bitsData = DataConverter.Integer2Bits(dataBitLength);
-            byte[] data = DataConverter.Bits2Bytes(bitsData).ToArray();
-            WriteFileBody(ref image, data, (int) x, (int) y);
-            x = 0;
-            y = 32;
-        }
-
-        public static int ReadFileHead(Bitmap image, out int? x, out int? y)
-        {
-            x = 0;
-            y = 0;
-            List<byte> retBits = new List<byte>(ReadFileBody(image, 32, (int) x, (int) y));
-            int ret = DataConverter.Bits2Integer(DataConverter.Bytes2Bits(retBits));
-            x = 0;
-            y = 32;
-            return ret;
-        }
-
-        public static void WriteFileBody(ref Bitmap image, byte[] data, int x, int y)
-        {
-            List<byte> originColorReds = ExtractColorReds(image, data.Length*8, x, y);
-
-            List<byte> bitsData = DataConverter.Bytes2Bits(new List<byte>(data));
-            int dataBitLength = data.Length*8;
-            List<byte> colorReds = ExtractColorReds(image, dataBitLength, x, y);
-            List<byte> newColorReds = MakeNewReds(colorReds, bitsData);
-            SetImageColorReds(ref image, x, y, newColorReds);
+            WriteFileBody(ref image, data, (int)x, (int)y);
         }
 
         public static byte[] ReadFileBody(Bitmap image, int dataBitLength, int x, int y)
@@ -118,67 +113,16 @@ namespace InfoHidden.Service
             }
         }
 
-
-        private static byte ReadLsbBitFromColorR(Color color)
+        public static int ReadFileHead(Bitmap image, out int? x, out int? y)
         {
-            return (byte) (color.R & 0x01);
+            x = 0;
+            y = 0;
+            List<byte> retBits = new List<byte>(ReadFileBody(image, 32, (int)x, (int)y));
+            int ret = DataConverter.Bits2Integer(DataConverter.Bytes2Bits(retBits));
+            x = 0;
+            y = 32;
+            return ret;
         }
-
-        public static List<byte> ExtractColorReds(Bitmap image, int length, int x, int y)
-        {
-            List<byte> colorReds = new List<byte>(length);
-
-            for (; x < image.Width; x++)
-            {
-                for (; y < image.Height; y++)
-                {
-                    colorReds.Add(image.GetPixel(x, y).R);
-
-                    if (colorReds.Count >= length)
-                    {
-                        return colorReds;
-                    }
-                }
-                y = 0;
-            }
-
-            throw new InvalidOperationException();
-        }
-
-        public static List<byte> ExtractBitsFromColorRedsLsb(List<byte> colorReds)
-        {
-            List<byte> bits = new List<byte>(colorReds.Count);
-            for (int i = 0; i < colorReds.Count; i++)
-            {
-                bits.Add((byte) DataConverter.GetOneBitFromByte(colorReds[i], 0));
-            }
-
-            return bits;
-        }
-
-
-        private static byte MakeNewRed(byte oldR, int aBit)
-        {
-            int lsbR = oldR & 0x01;
-            if (lsbR == aBit)
-                return oldR;
-            return (byte) (oldR ^ 0x01);
-        }
-
-        private static List<byte> MakeNewReds(List<byte> colorReds, List<byte> bitData)
-        {
-            Debug.Assert(colorReds.Count == bitData.Count);
-
-            List<byte> newColorReds = new List<byte>(colorReds.Count);
-            for (int i = 0; i < colorReds.Count; i++)
-            {
-                byte newR = MakeNewRed(colorReds[i], bitData[i]);
-                newColorReds.Add(newR);
-            }
-
-            return newColorReds;
-        }
-
 
         public static void SetImageColorReds(ref Bitmap image, int x, int y, List<byte> newColorReds)
         {
@@ -198,8 +142,61 @@ namespace InfoHidden.Service
 
                     idx++;
                 }
+
                 y = 0;
             }
+        }
+
+        public static void WriteFileBody(ref Bitmap image, byte[] data, int x, int y)
+        {
+            List<byte> originColorReds = ExtractColorReds(image, data.Length * 8, x, y);
+
+            List<byte> bitsData = DataConverter.Bytes2Bits(new List<byte>(data));
+            int dataBitLength = data.Length * 8;
+            List<byte> colorReds = ExtractColorReds(image, dataBitLength, x, y);
+            List<byte> newColorReds = MakeNewReds(colorReds, bitsData);
+            SetImageColorReds(ref image, x, y, newColorReds);
+        }
+
+        public static void WriteFileHead(ref Bitmap image, int dataBitLength, out int? x, out int? y)
+        {
+            x = 0;
+            y = 0;
+            List<byte> bitsData = DataConverter.Integer2Bits(dataBitLength);
+            byte[] data = DataConverter.Bits2Bytes(bitsData).ToArray();
+            WriteFileBody(ref image, data, (int)x, (int)y);
+            x = 0;
+            y = 32;
+        }
+
+        #endregion
+
+        #region Other methods
+
+        private static byte MakeNewRed(byte oldR, int aBit)
+        {
+            int lsbR = oldR & 0x01;
+            if (lsbR == aBit) return oldR;
+            return (byte)(oldR ^ 0x01);
+        }
+
+        private static List<byte> MakeNewReds(List<byte> colorReds, List<byte> bitData)
+        {
+            Debug.Assert(colorReds.Count == bitData.Count);
+
+            List<byte> newColorReds = new List<byte>(colorReds.Count);
+            for (int i = 0; i < colorReds.Count; i++)
+            {
+                byte newR = MakeNewRed(colorReds[i], bitData[i]);
+                newColorReds.Add(newR);
+            }
+
+            return newColorReds;
+        }
+
+        private static byte ReadLsbBitFromColorR(Color color)
+        {
+            return (byte)(color.R & 0x01);
         }
 
         #endregion

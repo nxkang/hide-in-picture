@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.IO.Compression;
-using System.Windows;
-using InfoHidden.Service.ServiceException;
-
-namespace InfoHidden.Service
+﻿namespace InfoHidden.Service
 {
-    public class Zip 
+    using System;
+    using System.IO;
+    using System.IO.Compression;
+
+    using InfoHidden.Service.ServiceException;
+
+    public class Zip
     {
+        #region Public methods
 
         public static byte[] Compress(byte[] fileBytes)
         {
@@ -51,9 +49,10 @@ namespace InfoHidden.Service
             }
             catch (Exception)
             {
-
                 throw new PasswordWrongException();
-            }  
+            }
         }
+
+        #endregion
     }
 }

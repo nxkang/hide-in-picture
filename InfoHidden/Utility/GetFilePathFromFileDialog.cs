@@ -6,12 +6,14 @@ using System.Text;
 
 namespace InfoHidden.Utility
 {
+    using System.Windows;
+
     public class GetFilePathFromFileDialog
     {
         public static string GetFilePathFromOpenFileDialog(string fileTypesPattern, string defaultExt)
         {
             System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            openFileDialog.Title = "选择文件";
+            openFileDialog.Title = Application.Current.FindResource("ChooseFile") as string;
             openFileDialog.Filter = fileTypesPattern;
             openFileDialog.FileName = string.Empty;
             openFileDialog.FilterIndex = 1;
@@ -22,7 +24,7 @@ namespace InfoHidden.Utility
             var result = openFileDialog.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.Cancel)
             {
-                return String.Empty;
+                return string.Empty;
             }
             
             return openFileDialog.FileName;
